@@ -1,7 +1,7 @@
 import { AvailableEndpoints, FilterCharacterParams, AllCharactersParams, SingleCharacterParams, DisneyCharactersPage, DisneyCharacterData, DisneyQueryPage } from "../types/DisneyAPI";
 
 // API base URL
-export const baseUrl = 'https://api.disneyapi.dev/';
+const baseUrl = 'https://api.disneyapi.dev/';
 
 // configuration object for url generation
 interface ConfigParams {
@@ -9,19 +9,28 @@ interface ConfigParams {
     query?: FilterCharacterParams | AllCharactersParams | SingleCharacterParams
 }
 
-// generate url for API call
+/**
+ * Generates a URL for a Disney API call
+ * @param config configuration object (incl. endpoint and query parameters)
+ * @returns string representation of URL
+ */
 const generateURL = (config: ConfigParams) => {
+    let url: URL = new URL(`${config?.endpoint ?? ''}`, baseUrl);
     // add id after endpoint
-    let url: URL = new URL(`${config?.endpoint ?? ''}${(config.query as SingleCharacterParams).id ?? ''}`, baseUrl);
+    if((config.query as SingleCharacterParams).id !== undefined) {
+        url.pathname = `${url.pathname}/${(config.query as SingleCharacterParams).id}`
+    }
     // add query parameters
-    config.query && Object.entries(config.query).forEach(([key, value]) => {
-        url.searchParams.append(key, value)
-    });
+    if(config.query) {
+        Object.entries(config.query).forEach(([key, value]) => {
+            url.searchParams.append(key, value)
+        });
+    }
     return url.toString();
 };
 
 /**
- * Fetches data from API
+ * Fetches data from Disney API
  * @param config configuration for url generation (incl. endpoint and query parameters)
  * @param signal abort controller signal
  * @returns reponse as JSON
@@ -65,10 +74,15 @@ const fetchCharacterById = async (id: number | string): Promise<DisneyCharacterD
     return response;
 }
 
-const fetchCharactersByFilter = async (filter: FilterCharacterParams): Promise<DisneyQueryPage> => {
+/**
+ * Fetches characters according to query
+ * @param query query parameters
+ * @returns character pages matching to query
+ */
+const fetchCharactersByQuery = async (query: FilterCharacterParams): Promise<DisneyQueryPage> => {
     const response = await fetcher({
         endpoint: AvailableEndpoints.filterCharacter,
-        query: filter
+        query
     });
     return response;
 };
@@ -78,7 +92,7 @@ const DisneyAPI = {
     fetchers: {
         byPage: fetchCharactersPage,
         byId: fetchCharacterById,
-        byFilter: fetchCharactersByFilter
+        byQuery: fetchCharactersByQuery
     }
 };
 
