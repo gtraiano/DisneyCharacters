@@ -1,0 +1,181 @@
+/* table container */
+.characters-table-container {
+    min-width: 25vw;
+    max-width: 50vw;
+    max-height: 60vh;
+    min-height: 40vh;
+    overflow: auto;
+    border: 1px black solid;
+    border-radius: 4px;
+    position: relative;
+}
+
+/* hide overflow when showing loading status */
+.characters-table-container[loading='1'] {
+    overflow: hidden;
+}
+
+/* overlay showing loading status */
+.table-overlay {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: whitesmoke;
+    opacity: 0.8;
+}
+
+.table-overlay::after {
+    content: 'loading';
+    font-weight: bold;
+    font-size: large;
+    letter-spacing: 0.5ch;
+}
+
+/* table styling */
+.characters-table {
+    overflow: auto;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.3rem;
+    table-layout: fixed;
+}
+
+/* header styling */
+.characters-table thead {
+    background-color: gray;
+    text-transform: capitalize;
+    position: sticky;
+    top: 0;
+    font-weight: bolder;
+    text-align: center;
+    user-select: none;
+}
+
+/* sortable header columns styling */
+.characters-table thead .sortable {
+    cursor: pointer;
+    position: relative;
+}
+
+.characters-table thead .sortable::after {
+    position: absolute;
+    right: 0;
+    top: 25%;
+}
+
+/* show symbol for ascending and descending sorting order */
+.characters-table thead .sortable[order="asc"]::after {
+    content: '▲';
+    vertical-align: middle;
+}
+
+.characters-table thead .sortable[order="desc"]::after {
+    content: '▼';
+}
+
+/* constrict header cell width */
+.characters-table thead > tr > th {
+    min-height: 1ch;
+    word-wrap: break-word;
+    max-width: 10ch;
+}
+
+/* table body rows styling */
+.characters-table tbody > tr {
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.characters-table tbody > tr > td {
+    vertical-align: middle;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
+/* hover over row effect */
+.characters-table tbody > tr:hover > td {
+    background-color: lightskyblue;
+    transition: all ease-in 70ms;
+}
+
+/* alternating row colours */
+.characters-table tbody > tr:nth-child(odd) {
+    background-color: black;
+    color: white;
+}
+
+/* table footer styling */
+.characters-table tfoot {
+    position: sticky;
+    bottom: 0;
+    background-color: gray;
+    width: 100%;
+    font-size: medium;
+}
+
+/* table pagination styling */
+.characters-table .pagination > ul {
+    list-style: none;
+    margin: .5ch;
+}
+
+/* current page element */
+.characters-table .pagination > ul > li.current-page {
+    font-weight: bold;
+}
+
+/* previous page caret */
+.characters-table .pagination > ul > li.prev-page::after {
+    content: '^';
+    pointer-events: all;
+    display: inline-block;
+}
+
+/* rotate caret */
+.characters-table .pagination > ul > li.prev-page {    
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+/* next page caret */
+.characters-table .pagination > ul > li.next-page::after {
+    content: '^';
+    pointer-events: all;
+    display: inline-block;
+}
+
+/* rotate caret */
+.characters-table .pagination > ul > li.next-page {
+    transform: rotate(90deg);
+    pointer-events: none;
+}
+
+.characters-table .pagination > ul > li {
+    display: inline-block;
+    margin-right: 1ch;
+    cursor: pointer;
+}
+
+/* character avatar */
+.avatar {
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.name-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.name-link:hover {
+    text-decoration: underline;
+}

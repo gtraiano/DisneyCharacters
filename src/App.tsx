@@ -1,23 +1,32 @@
-import { useEffect } from "react"
+import './style.css';
+import { useEffect } from "react";
 import { addPageAsync } from "./store/reducers/charactersPages";
-import { useSelector, useDispatch } from 'react-redux'
-import { selectCharactersPages, selectFetcherStatus } from "./store";
+import { useDispatch } from 'react-redux';
+import CharactersTable from './components/CharactersTable';
+import { ShowOverlay } from './components/CharactersTable/types';
 
 function App() {
-  const charactersPages = useSelector(selectCharactersPages);
-  const fetcherStatus = useSelector(selectFetcherStatus);
-  const dispatch = useDispatch<any>();
-  
-  useEffect(() => {
-    dispatch(addPageAsync(1));
-  }, []);
-  
-  return (
-    <div className="App">
-      <div>{fetcherStatus.status}</div>
-      {JSON.stringify(charactersPages)}
-    </div>
-  )
-}
+    const dispatch = useDispatch<any>();
 
-export default App
+    useEffect(() => {
+        const onShowOverlay = (e: Event) => {
+            e.stopPropagation();
+            console.log(e);
+        };
+        window.addEventListener(ShowOverlay.eventName, onShowOverlay);
+        // fetch first page
+        dispatch(addPageAsync(1));
+        
+        return () => {
+            window.removeEventListener(ShowOverlay.eventName, onShowOverlay);
+        };
+    }, []);
+    
+    return (
+        <div className="App">
+            <CharactersTable />
+        </div>
+    )
+};
+
+export default App;
