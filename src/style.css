@@ -1,0 +1,19 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+.App {
+    height: auto;
+    width: auto;
+    padding: 2%;
+    display: flex;
+    justify-content: center;
+}
