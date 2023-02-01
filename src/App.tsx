@@ -2,8 +2,9 @@ import './style.css';
 import { useEffect } from "react";
 import { addPageAsync } from "./store/reducers/charactersPages";
 import { useDispatch } from 'react-redux';
-import CharactersTable from './components/CharactersTable';
-import { ShowOverlay } from './components/CharactersTable/types';
+import CharactersTable from './components/CharactersTable/Table';
+import { ShowOverlay } from './events/ShowOverlay';
+import Filter from './components/Filter';
 
 function App() {
     const dispatch = useDispatch<any>();
@@ -25,6 +26,7 @@ function App() {
     return (
         <div className="App">
             <CharactersTable />
+            <Filter />
         </div>
     )
 };

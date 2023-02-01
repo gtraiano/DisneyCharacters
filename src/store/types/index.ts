@@ -1,4 +1,4 @@
-import { DisneyCharactersPage } from "../../types/DisneyAPI"
+import { DisneyCharacterData, DisneyCharactersPage } from "../../types/DisneyAPI"
 
 export interface CharactersPagesState extends DisneyCharactersPage {
     currentPage: number
@@ -16,7 +16,13 @@ export interface FetcherStatus {
     error: string | null
 }
 
+export interface FilterStatus {
+    query: string | null,
+    field: keyof DisneyCharacterData
+}
+
 export interface StoreState {
     charactersPages: CharactersPagesState,
-    fetcherStatus: FetcherStatus
+    fetcherStatus: FetcherStatus,
+    filter: FilterStatus
 }

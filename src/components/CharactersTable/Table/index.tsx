@@ -1,13 +1,14 @@
 import style from './style.module.css';
 import { FormEvent, SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCharactersPages, selectFetcherStatus } from '../../store';
-import { addPageAsync } from '../../store/reducers/charactersPages';
-import { FetchingStatus } from '../../store/types';
-import { DisneyCharacterData } from '../../types/DisneyAPI';
-import { CharactersTableProps } from './types';
-import { ShowOverlay } from './types';
-import Pagination from './Pagination';
+import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
+import { addPageAsync } from '../../../store/reducers/charactersPages';
+import { FetchingStatus } from '../../../store/types';
+import { DisneyCharacterData } from '../../../types/DisneyAPI';
+import { CharactersTableProps } from '../Table/types';
+import { ShowOverlay } from '../../../events/ShowOverlay';
+import Pagination from '../Pagination';
+import { sortFunction, filterFunction } from './helpers';
 
 // default table props
 const defaultProps: CharactersTableProps = {
@@ -25,12 +26,12 @@ const defaultProps: CharactersTableProps = {
             </a>
         },
         // # of tv show appearances
-        { key: 'tvShows', label: 'tv shows appearances', sortable: true,
+        { key: 'tvShows', label: 'tv shows', sortable: true,
           compareFn: (a: DisneyCharacterData, b: DisneyCharacterData) => a['tvShows'].length - b['tvShows'].length,
           computedValue: (item: DisneyCharacterData) => item['tvShows'].length.toString()
         },
         // # of video games apearances
-        { key: 'videoGames', label: 'video games appearances', sortable: true,
+        { key: 'videoGames', label: 'video games', sortable: true,
           computedValue: (item: DisneyCharacterData) => item['videoGames'].length.toString(),
           compareFn: (a: DisneyCharacterData, b: DisneyCharacterData) => a['videoGames'].length - b['videoGames'].length
         },
@@ -46,6 +47,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     // store state
     const charactersPages = useSelector(selectCharactersPages);
     const fetchingStatus = useSelector(selectFetcherStatus);
+    const filter = useSelector(selectFilter);
     // store dispatcher
     const dispatch = useDispatch<any>();
     // items per page
@@ -107,12 +109,16 @@ const CharactersTable = ({ props = defaultProps }) => {
         setCurrentPage(newCurrPage);
     };
 
+    // go to page input handler
     const onGoToPage = (e: SyntheticEvent) => {
+        // prevent arrow keys up/down default behaviour
         if(e.code === 'ArrowDown' || e.code === 'ArrowUp') {
             return e.preventDefault();
         }
+        // process value on Enter
         if(e.code === 'Enter' || e.code === 'NumpadEnter') {
             let value = Number.parseInt(e.target.value);
+            // not a number or invalid range
             if(
                 Number.isNaN(value)
                 || value > Math.ceil(charactersPages.count / itemsPerPage)
@@ -120,6 +126,7 @@ const CharactersTable = ({ props = defaultProps }) => {
             ) {
                 e.target.blur();
             }
+            // ok, proceed
             else {
                 setCurrentPage(value);
             }
@@ -127,24 +134,15 @@ const CharactersTable = ({ props = defaultProps }) => {
         }
     };
 
-    // sort function for table
-    const sortFunction = (a: DisneyCharacterData, b: DisneyCharacterData) => {
-        let result = 0;
-        // run through each column in sortBy
-        for(const col of sortBy) {
-            // use custom comparison function or compare as strings when no function provided
-            const comparison = props.columns[col.colIndex].compareFn !== undefined
-                ? (props.columns[col.colIndex].compareFn as Function)(a, b)
-                : String(a).localeCompare(String(b));
-            result += comparison * (col.asc ? -1 : 1); // consider if order is ascending or descending
-        }
-        return result;
-    };
-
     // generates table header
     const generateTableHeader = () => {
         return (
             <thead>
+                <tr>
+                    <td colSpan={2}></td>
+                    <td colSpan={2}>Appearances</td>
+                    <td colSpan={props.columns.length - 4}></td>
+                </tr>
                 <tr>
                 { props.columns.map(
                     (c, i) =>
@@ -168,7 +166,8 @@ const CharactersTable = ({ props = defaultProps }) => {
             <tbody>
                 {
                     [...charactersPages.data]                                               // work on array copy
-                    .sort(sortFunction)                                                     // sort
+                    .filter(filterFunction(filter))
+                    .sort(sortFunction({ columns: props.columns }, sortBy))                 // sort
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)    // slice for current page
                     .map((row, i) =>                                                        // table row for each array row
                         <tr key={`row_${i}`}>
