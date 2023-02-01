@@ -1,12 +1,13 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import style from './style.module.css';
+import { FormEvent, SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCharactersPages, selectFetcherStatus } from '../../store';
 import { addPageAsync } from '../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../store/types';
 import { DisneyCharacterData } from '../../types/DisneyAPI';
-import style from './style.module.css';
 import { CharactersTableProps } from './types';
 import { ShowOverlay } from './types';
+import Pagination from './Pagination';
 
 // default table props
 const defaultProps: CharactersTableProps = {
@@ -85,6 +86,61 @@ const CharactersTable = ({ props = defaultProps }) => {
         e.currentTarget.removeAttribute('order');
     };
 
+    // pagination next page click handler
+    const onClickNextPage = () => {
+        // fetch next page from API if last current page is reached
+        currentPage === Math.ceil(charactersPages.count / itemsPerPage) && dispatch(addPageAsync(charactersPages.currentPage+1));
+        setCurrentPage(p => p + 1);
+    };
+
+    // pagination previous page click handler
+    const onClickPrevPage = () => { setCurrentPage(p => p > 1 ? p - 1 : 1 ); };
+
+    // pagination items per page change handler
+    const onChangeItemsPerPage = (e: SyntheticEvent) => {
+        const value = Number.parseInt(((e as FormEvent).target as HTMLSelectElement).value);
+        // calculate new current page according to items
+        let newCurrPage = Math.ceil((currentPage * itemsPerPage) / value);
+        newCurrPage = newCurrPage > Math.ceil(charactersPages.count / value) ? Math.ceil(charactersPages.count / value) : newCurrPage;
+        // update respective state
+        setItemsPerPage(value);
+        setCurrentPage(newCurrPage);
+    };
+
+    const onGoToPage = (e: SyntheticEvent) => {
+        if(e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+            return e.preventDefault();
+        }
+        if(e.code === 'Enter' || e.code === 'NumpadEnter') {
+            let value = Number.parseInt(e.target.value);
+            if(
+                Number.isNaN(value)
+                || value > Math.ceil(charactersPages.count / itemsPerPage)
+                || value < 1
+            ) {
+                e.target.blur();
+            }
+            else {
+                setCurrentPage(value);
+            }
+            e.target.value = '';
+        }
+    };
+
+    // sort function for table
+    const sortFunction = (a: DisneyCharacterData, b: DisneyCharacterData) => {
+        let result = 0;
+        // run through each column in sortBy
+        for(const col of sortBy) {
+            // use custom comparison function or compare as strings when no function provided
+            const comparison = props.columns[col.colIndex].compareFn !== undefined
+                ? (props.columns[col.colIndex].compareFn as Function)(a, b)
+                : String(a).localeCompare(String(b));
+            result += comparison * (col.asc ? -1 : 1); // consider if order is ascending or descending
+        }
+        return result;
+    };
+
     // generates table header
     const generateTableHeader = () => {
         return (
@@ -125,73 +181,21 @@ const CharactersTable = ({ props = defaultProps }) => {
         )
     };
 
-    // sort function for table
-    const sortFunction = (a: DisneyCharacterData, b: DisneyCharacterData) => {
-        let result = 0;
-        // run through each column in sortBy
-        for(const col of sortBy) {
-            // use custom comparison function or compare as strings when no function provided
-            const comparison = props.columns[col.colIndex].compareFn !== undefined
-                ? (props.columns[col.colIndex].compareFn as Function)(a, b)
-                : String(a).localeCompare(String(b));
-            result += comparison * (col.asc ? -1 : 1); // consider if order is ascending or descending
-        }
-        return result;
-    };
-
     // generates table footer
     const generateTableFooter = () => {
         return (
             <tfoot>
                 <tr>
-                    <td colSpan={1}>
-                        Items per page&nbsp;
-                        <select defaultValue={itemsPerPage}>
-                        {
-                            // items per page options
-                            [10, 20, 50, 100, 200, 500].map(val =>
-                                <option
-                                    key={`option_${val}`}
-                                    value={val}
-                                    label={val.toString()}
-                                    onClick={e => { setItemsPerPage(Number.parseInt(e.currentTarget.value)); setCurrentPage(1); }}
-                                />
-                            )
-                        }
-                        </select>
-                    </td>
-                    {/* pagination */}
-                    <td className={style['pagination']} colSpan={props.columns.length - 1}>
-                        <ul>
-                            {/* previous page caret */}
-                            <li
-                                className={style['prev-page']}
-                                onClick={() => { setCurrentPage(p => p > 1 ? p - 1 : 1 ); }}
-                            />
-                            { // generate page numbers
-                              new Array(Math.ceil(charactersPages.count / itemsPerPage))
-                                .fill(0)
-                                .map((_n, i) => i + 1)
-                                .map(
-                                    p =>
-                                    <li
-                                        key={`page_${p}`}
-                                        className={currentPage === p ? style['current-page'] : undefined}
-                                        onClick={() => { setCurrentPage(p); }}
-                                    >
-                                        {p}
-                                    </li>
-                                )
-                            }
-                            {/* next page caret */}
-                            <li
-                                className={style['next-page']}
-                                onClick={() => {
-                                    currentPage === Math.ceil(charactersPages.count / itemsPerPage) && dispatch(addPageAsync(charactersPages.currentPage+1));
-                                    setCurrentPage(p => p + 1);
-                                }}
-                            />
-                        </ul>
+                    <td colSpan={props.columns.length}>
+                        <Pagination
+                            totalItems={charactersPages.count}
+                            itemsPerPage={itemsPerPage}
+                            currentPage={currentPage}
+                            onChangeItemsPerPage={onChangeItemsPerPage}
+                            onClickNextPage={onClickNextPage}
+                            onClickPrevPage={onClickPrevPage}
+                            onGoToPage={onGoToPage}
+                        />
                     </td>
                 </tr>
             </tfoot>

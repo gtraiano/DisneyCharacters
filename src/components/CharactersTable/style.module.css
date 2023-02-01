@@ -119,47 +119,8 @@
     font-size: medium;
 }
 
-/* table pagination styling */
-.characters-table .pagination > ul {
-    list-style: none;
-    margin: .5ch;
-}
-
-/* current page element */
-.characters-table .pagination > ul > li.current-page {
-    font-weight: bold;
-}
-
-/* previous page caret */
-.characters-table .pagination > ul > li.prev-page::after {
-    content: '^';
-    pointer-events: all;
-    display: inline-block;
-}
-
-/* rotate caret */
-.characters-table .pagination > ul > li.prev-page {    
-    transform: rotate(-90deg);
-    pointer-events: none;
-}
-
-/* next page caret */
-.characters-table .pagination > ul > li.next-page::after {
-    content: '^';
-    pointer-events: all;
-    display: inline-block;
-}
-
-/* rotate caret */
-.characters-table .pagination > ul > li.next-page {
-    transform: rotate(90deg);
-    pointer-events: none;
-}
-
-.characters-table .pagination > ul > li {
-    display: inline-block;
-    margin-right: 1ch;
-    cursor: pointer;
+.characters-table tfoot > tr > td {
+    padding: 1ch;
 }
 
 /* character avatar */

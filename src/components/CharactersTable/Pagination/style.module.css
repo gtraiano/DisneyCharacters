@@ -1,0 +1,54 @@
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+}
+
+.pagination > ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* previous and next page carets */
+.pagination > ul > li.prev-page,
+.pagination > ul > li.next-page {
+    font-size: inherit;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+/* previous page caret */
+.pagination > ul > li.prev-page::after {
+    content: '<';
+    pointer-events: all;
+    
+}
+
+/* next page caret */
+.pagination > ul > li.next-page::after {
+    content: '>';
+    pointer-events: all;
+}
+
+.pagination > ul > li {
+    display: inline-block;
+}
+
+.pagination > ul > li:not(:last-child) {
+    margin-right: 1ch;
+}
+
+.go-to-page > label {
+    margin-right: 1ch;
+}
+
+.go-to-page > input {
+    width: 4ch;
+    appearance: textfield;
+}
+
+.items-per-page > label {
+    word-wrap: break-word;
+    margin-right: 1ch;
+}
