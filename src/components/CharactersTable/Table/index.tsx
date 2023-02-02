@@ -1,5 +1,5 @@
 import style from './style.module.css';
-import { FormEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
 import { addPageAsync } from '../../../store/reducers/charactersPages';
@@ -8,7 +8,7 @@ import { DisneyCharacterData } from '../../../types/DisneyAPI';
 import { CharactersTableProps } from '../Table/types';
 import { ShowOverlay } from '../../../events/ShowOverlay';
 import Pagination from '../Pagination';
-import { sortFunction, filterFunction } from './helpers';
+import { sortFunction, filterFunction, selectRows } from './helpers';
 
 // default table props
 const defaultProps: CharactersTableProps = {
@@ -59,10 +59,29 @@ const CharactersTable = ({ props = defaultProps }) => {
     // container div reference
     const containerRef = useRef<HTMLDivElement>();
 
+    // select rows from characters table according to criteria
+    const selectTableRows = useCallback(() =>
+        selectRows({
+            array: charactersPages.data,
+            filtering: { filter, filterFunction },
+            sorting: { columns: { columns: props }, sortBy, sortFunction },
+            pagination: { currentPage, itemsPerPage }
+        })
+    , [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
+    // local copy of characters table rows
+    const [tableRows, setTableRows] = useState<DisneyCharacterData[]>(() => selectTableRows());
+
+    // update table view
     useEffect(() => {
-        // scroll container to top on table page change
+        setTableRows(selectTableRows());
+    }, [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
+
+    // scroll container to top on table page change
+    useEffect(() => {
         containerRef.current?.scrollTo(0, 0);
     }, [currentPage]);
+
+    
 
     // handle left click on sortable column header
     const handleSortOnClick = (index: number) => (e: SyntheticEvent) => {
@@ -172,10 +191,7 @@ const CharactersTable = ({ props = defaultProps }) => {
         return (
             <tbody>
                 {
-                    [...charactersPages.data]                                               // work on array copy
-                    .filter(filterFunction(filter))
-                    .sort(sortFunction({ columns: props.columns }, sortBy))                 // sort
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)    // slice for current page
+                    tableRows
                     .map((row, i) =>                                                        // table row for each array row
                         <tr key={`row_${i}`}>
                             {/* table cells for each array row */}

@@ -28,3 +28,32 @@ export const filterFunction = (filter: FilterStatus) => (c: DisneyCharacterData)
         ? (c[filter.key] as Array<any>).reduce((truth, value) => truth || re.test(value.toString()), false)   // compare against each array element
         : re.test(c[filter.key].toString());
 };
+
+interface SelectRowsProps {
+    array: DisneyCharacterData[],
+    filtering: {
+        filter: FilterStatus,
+        filterFunction: (filter: FilterStatus) => (c: DisneyCharacterData) => boolean
+    },
+    sorting: {
+        columns: { columns: Pick<CharactersTableProps, 'columns'> },
+        sortBy: Array<{ colIndex: number, asc: boolean }>,
+        sortFunction: ({ columns }: Pick<CharactersTableProps, 'columns'>, sortBy: Array<{ colIndex: number, asc: boolean }>) => (a: DisneyCharacterData, b: DisneyCharacterData) => number
+    },
+    pagination: {
+        currentPage: number,
+        itemsPerPage: number
+    }
+};
+
+// select row from character data array
+export const selectRows = ({
+    array,
+    filtering: { filter, filterFunction },
+    sorting: { columns: { columns }, sortBy, sortFunction },
+    pagination: { currentPage, itemsPerPage }
+}: SelectRowsProps) =>
+    [...array]                                                                  // work on array copy
+        .filter(filterFunction(filter))                                         // filter
+        .sort(sortFunction(columns, sortBy))                                // sort
+        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);   // slice for current page
