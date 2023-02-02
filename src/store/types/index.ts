@@ -18,7 +18,7 @@ export interface FetcherStatus {
 
 export interface FilterStatus {
     query: string | null,
-    field: keyof DisneyCharacterData
+    key: keyof DisneyCharacterData
 }
 
 export interface StoreState {

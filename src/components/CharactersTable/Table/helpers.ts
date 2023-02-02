@@ -24,7 +24,7 @@ export const filterFunction = (filter: FilterStatus) => (c: DisneyCharacterData)
     if(!filter.query || !filter.query.length) return true;
     const re = new RegExp(filter.query.trim(), 'gi');
     // treat everything as string
-    return c[filter.field] instanceof Array
-        ? (c[filter.field] as Array<any>).reduce((truth, value) => truth || re.test(value.toString()), false)   // compare against each array element
-        : re.test(c[filter.field].toString());
+    return c[filter.key] instanceof Array
+        ? (c[filter.key] as Array<any>).reduce((truth, value) => truth || re.test(value.toString()), false)   // compare against each array element
+        : re.test(c[filter.key].toString());
 };

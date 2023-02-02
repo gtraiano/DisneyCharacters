@@ -5,7 +5,7 @@ import { FilterStatus } from "../types";
 
 const initialState: FilterStatus = {
     query: null,    // query
-    field: 'name'   // field to filter by
+    key: 'name'     // key to filter by
 }
 
 const filterStatusSlice = createSlice({
@@ -19,7 +19,7 @@ const filterStatusSlice = createSlice({
             state.query = null;
         },
         setField: (state, action) => {
-            state.field = action.payload
+            state.key = action.payload
         }
     }
 });
