@@ -4,7 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { setQuery, clearQuery, setField } from "../../store/reducers/filter";
 import { DisneyCharacterData } from "../../types/DisneyAPI";
 
-const Filter = () => {
+interface FilterProps {
+    styling?: React.CSSProperties
+}
+
+const Filter = ({ styling }: FilterProps) => {
     const filter = useSelector(selectFilter);
     const dispatch = useDispatch<any>();
     const fields: Array<{
@@ -16,7 +20,7 @@ const Filter = () => {
     ];
     
     return (
-        <div className={style['filter-container']}>
+        <div className={style['filter-container']} style={styling}>
             <label>Search</label>
             <input
                 type='text'

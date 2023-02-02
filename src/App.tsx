@@ -39,7 +39,7 @@ function App() {
     return (
         <div className="App">
             <CharactersTable />
-            <Filter />
+            <Filter styling={{ marginTop: '1em' }} />
             { showModal && <Modal toggleModal={setShowModal} children={modalContent} />}
         </div>
     )

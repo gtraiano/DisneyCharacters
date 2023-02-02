@@ -27,6 +27,7 @@
 .filter-container > input ~ span::after {
     content: '✖';
     pointer-events: all;
+    font-size: 80%;
 }
 
 /* margin between elements */
