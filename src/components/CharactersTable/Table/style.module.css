@@ -66,8 +66,9 @@
 .characters-table thead .sortable::after {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 12.5%;
     vertical-align: middle;
+    font-size: 75%;
 }
 
 /* show symbol for ascending and descending sorting order */

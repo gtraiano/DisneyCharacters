@@ -1,5 +1,5 @@
 import style from './style.module.css';
-import { FormEvent, SyntheticEvent, useState } from 'react';
+import { FormEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
 import { addPageAsync } from '../../../store/reducers/charactersPages';
@@ -56,6 +56,13 @@ const CharactersTable = ({ props = defaultProps }) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     // columns to sort by
     const [sortBy, setSortBy] = useState<Array<{ colIndex: number, asc: boolean }>>([]);
+    // container div reference
+    const containerRef = useRef<HTMLDivElement>();
+
+    useEffect(() => {
+        // scroll container to top on table page change
+        containerRef.current?.scrollTo(0, 0);
+    }, [currentPage]);
 
     // handle left click on sortable column header
     const handleSortOnClick = (index: number) => (e: SyntheticEvent) => {
@@ -205,6 +212,7 @@ const CharactersTable = ({ props = defaultProps }) => {
         <div
             className={style['characters-table-container']}
             loading={fetchingStatus.status === FetchingStatus.LOADING ? '1' : '0'}
+            ref={containerRef}
         >
             {/* display overlay when fetching data*/
              fetchingStatus.status === FetchingStatus.LOADING && <div className={style['table-overlay']} />
