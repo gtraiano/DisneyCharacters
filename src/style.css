@@ -9,6 +9,7 @@ body {
     flex-direction: column;
     height: 100vh;
     margin: 0;
+    background-image: url('https://disneyapi.dev/icons/icon-512x512.png');
 }
 
 #root {
