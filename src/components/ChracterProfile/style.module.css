@@ -1,0 +1,46 @@
+.profile-container {
+    padding: 10px 20px;
+}
+
+.profile-container > .info {
+    display: flex;
+}
+
+.info > img {
+    display: inline-block;
+    height: 150px;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    margin-right: 20px;
+    border-radius: 4px;
+}
+
+.info > .stats {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.stats > h2 {
+    margin-top: 0;
+}
+
+.profile-container > ul {
+    padding-left: calc(inherit + 10px);
+}
+
+.profile-container > ul > li {
+    font-style: italic;
+}
+
+.profile-container > ul > li::marker {
+    content:"[" counter(list-item)"] ";
+    font-style: normal;
+}
+
+.profile-container > ul > li::after {
+    margin-right: 1em;
+}
+
+.none {
+    margin-left: 20px;
+}
