@@ -1,6 +1,7 @@
+import style from './style.module.css';
 import { selectFilter } from "../../store";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuery, setField } from "../../store/reducers/filter";
+import { setQuery, clearQuery, setField } from "../../store/reducers/filter";
 import { DisneyCharacterData } from "../../types/DisneyAPI";
 
 const Filter = () => {
@@ -15,14 +16,15 @@ const Filter = () => {
     ];
     
     return (
-        <div>
+        <div className={style['filter-container']}>
             <label>Search</label>
             <input
                 type='text'
                 value={filter.query ?? ''}
                 onChange={e => { dispatch(setQuery(e.currentTarget.value)); }}
             />
-            <select onChange={e => { dispatch(setField(e.target.value)); }}>
+            <span title='clear query' onClick={() => { dispatch(clearQuery()); } } />
+            <select title='filter by' onChange={e => { dispatch(setField(e.target.value)); }}>
                 { fields.map(({ key, label }) => <option key={`field_${key}`} value={key} label={label} />) }
             </select>
         </div>

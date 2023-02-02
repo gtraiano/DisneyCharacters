@@ -1,0 +1,39 @@
+.filter-container {
+    border: none;
+}
+
+.filter-container > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.filter-container > label {
+    text-transform: capitalize;
+}
+
+/* accomodate for clear button */
+.filter-container > input {
+    padding-right: 1.5em;
+}
+
+/* clear button */
+.filter-container > input ~ span {
+    display: inline-block;
+    transform: translateX(-1.5em);
+    pointer-events: none;
+    cursor: pointer;
+}
+
+.filter-container > input ~ span::after {
+    content: '✖';
+    pointer-events: all;
+}
+
+/* margin between elements */
+.filter-container > *:not(:last-child) {
+    margin-right: 0.5em;
+}
+
+.filter-container > span ~ select {
+    margin-left: -1.5em;
+}
