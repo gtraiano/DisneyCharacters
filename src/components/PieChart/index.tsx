@@ -10,10 +10,11 @@ ExportData(Highcharts); // for csv export
 
 interface PieChartProps {
     width?: string,
-    height?: string
+    height?: string,
+    containerStyling?: React.CSSProperties
 }
 
-const PieChart = ({ width, height }: PieChartProps) => {
+const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     // reference to chart container
     const containerRef = useRef<HTMLDivElement>(null);
     // reference to pie chart
@@ -114,7 +115,7 @@ const PieChart = ({ width, height }: PieChartProps) => {
     }, [width, height]);
     
     return (
-        <div ref={containerRef} style={{ width: width ?? '40vw', height: height ?? 'auto' }} />
+        <div ref={containerRef} style={{ width: width ?? '40vw', height: height ?? 'auto', ...containerStyling }} />
     );
 };
 
