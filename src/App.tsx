@@ -8,7 +8,6 @@ import Filter from './components/Filter';
 import Modal from './components/Modal';
 import store from './store';
 import CharacterProfile from './components/ChracterProfile';
-import { VisibleCharacters } from './events/VisibleCharacters';
 import PieChart from './components/PieChart';
 
 function App() {
@@ -40,9 +39,9 @@ function App() {
     
     return (
         <div className="App">
+            <Filter styling={{ marginBottom: '1em' }} />
             <CharactersTable />
-            <Filter styling={{ marginTop: '1em' }} />
-            <PieChart />
+            <PieChart width='500px' height='300px' containerStyling={{ marginTop: '1em' }} />
             { showModal && <Modal toggleModal={setShowModal} children={modalContent} />}
         </div>
     )
