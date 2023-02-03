@@ -33,7 +33,7 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
             }));
         // update chart
         if(pieChart.current) {
-            pieChart.current.showLoading();
+            pieChart.current.showLoading('calculating');
             pieChart.current.series[0].setData(characters);
             pieChart.current.redraw();
             pieChart.current.hideLoading();
@@ -55,7 +55,7 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
                 chart: {
                     renderTo: containerRef.current,
                     plotBackgroundColor: 'rgba(255,255,255,0)',
-                    plotBorderWidth: null,
+                    plotBorderWidth: undefined,
                     backgroundColor: 'rgba(255,255,255,0)',
                     borderColor: 'black',
                     borderWidth: 0.5,

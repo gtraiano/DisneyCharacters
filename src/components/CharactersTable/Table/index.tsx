@@ -181,25 +181,25 @@ const CharactersTable = ({ props = defaultProps }) => {
     // go to page input handler
     const onGoToPage = (e: SyntheticEvent) => {
         // prevent arrow keys up/down default behaviour
-        if(e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+        if((e.nativeEvent as KeyboardEvent).code === 'ArrowDown' || (e.nativeEvent as KeyboardEvent).code === 'ArrowUp') {
             return e.preventDefault();
         }
         // process value on Enter
-        if(e.code === 'Enter' || e.code === 'NumpadEnter') {
-            let value = Number.parseInt(e.target.value);
+        if((e.nativeEvent as KeyboardEvent).code === 'Enter' || (e.nativeEvent as KeyboardEvent).code === 'NumpadEnter') {
+            let value = Number.parseInt((e.currentTarget as HTMLInputElement).value);
             // not a number or invalid range
             if(
                 Number.isNaN(value)
                 || value > Math.ceil(charactersPages.count / itemsPerPage)
                 || value < 1
             ) {
-                e.target.blur();
+                (e.currentTarget as HTMLInputElement).blur();
             }
             // ok, proceed
             else {
                 setCurrentPage(value);
             }
-            e.target.value = '';
+            (e.currentTarget as HTMLInputElement).value = '';
         }
     };
 
@@ -282,7 +282,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     return (
         <div
             className={style['characters-table-container']}
-            loading={fetchingStatus.status === FetchingStatus.LOADING ? '1' : '0'}
+            data-loading={fetchingStatus.status === FetchingStatus.LOADING ? '' : undefined}
             ref={containerRef}
         >
             {/* display overlay when fetching data*/

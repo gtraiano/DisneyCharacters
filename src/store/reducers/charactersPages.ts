@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, Dispatch } from "@reduxjs/toolkit";
 import DisneyAPI from "../../controllers/DisneyAPI";
 import { CharactersPagesState, FetchingStatus } from "../types";
 import { setStatus, setError } from "./fetcherStatus";
@@ -29,7 +29,7 @@ export const { addPage } = characterPagesSlice.actions;
 
 // async call to Disney API
 export const addPageAsync = (pageNum: number | string = 1) => {
-    return async (dispatch) => {
+    return async (dispatch: Dispatch<any>) => {
         try {
             // show we are busy
             dispatch(setStatus(FetchingStatus.LOADING));

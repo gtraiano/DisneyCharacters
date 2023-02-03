@@ -10,7 +10,7 @@
 }
 
 /* hide overflow when showing loading status */
-.characters-table-container[loading='1'] {
+.characters-table-container[loading] {
     overflow: hidden;
 }
 
