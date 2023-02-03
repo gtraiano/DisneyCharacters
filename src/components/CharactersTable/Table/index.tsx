@@ -52,12 +52,14 @@ const CharactersTable = ({ props = defaultProps }) => {
     const filter = useSelector(selectFilter);
     // store dispatcher
     const dispatch = useDispatch<any>();
+
     // items per page
     const [itemsPerPage, setItemsPerPage] = useState<number>(props.perPage ?? 50);
     // current table page
     const [currentPage, setCurrentPage] = useState<number>(1);
     // columns to sort by
     const [sortBy, setSortBy] = useState<Array<{ colIndex: number, asc: boolean }>>([]);
+
     // container div reference
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +74,19 @@ const CharactersTable = ({ props = defaultProps }) => {
     , [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
     // local copy of characters table rows
     const [tableRows, setTableRows] = useState<DisneyCharacterData[]>(() => selectTableRows());
+
+    useEffect(() => {
+        if(containerRef.current) {
+            window.addEventListener('resize', setTableBodyWidth);
+            return () => {
+                window.removeEventListener('resize', setTableBodyWidth);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        setTableBodyWidth();
+    }, [props.columns, tableRows.length]);
 
     // update table view
     useEffect(() => {
@@ -91,6 +106,19 @@ const CharactersTable = ({ props = defaultProps }) => {
     useEffect(() => {
         setCurrentPage(1);
     }, [filter]);
+
+    // set tbody and tbody > td width
+    const setTableBodyWidth = () => {
+        const tbody = (containerRef.current as HTMLDivElement).querySelector('tbody');
+        (containerRef.current as HTMLDivElement).style.overflowX = 'hidden';
+        if(!tbody || !tbody.childElementCount) return;
+        tbody.style.width = `${(containerRef.current as HTMLDivElement).clientWidth}px`;
+        const tdWidth = (containerRef.current as HTMLDivElement).clientWidth / props.columns.length;
+        tbody.querySelectorAll('tr > td').forEach(td => {
+            (td as HTMLTableCellElement).style.width = `${tdWidth}px`;
+        });
+        (containerRef.current as HTMLDivElement).style.overflowX = '';
+    };
 
     // handle left click on sortable column header
     const handleSortOnClick = (index: number) => (e: SyntheticEvent) => {

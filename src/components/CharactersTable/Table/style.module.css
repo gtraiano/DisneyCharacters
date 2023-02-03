@@ -2,8 +2,7 @@
 .characters-table-container {
     min-width: 25vw;
     max-width: 50vw;
-    max-height: 60vh;
-    min-height: 40vh;
+    height: 50vh;
     overflow: auto;
     border: 1px black solid;
     border-radius: 4px;
@@ -44,6 +43,7 @@
     border-collapse: collapse;
     font-size: 1.3rem;
     table-layout: fixed;
+    display: table;
 }
 
 /* header styling */
@@ -85,6 +85,13 @@
     min-height: 1ch;
     word-wrap: break-word;
     max-width: 10ch;
+}
+
+/* set to block in order to be able to set min-height */
+.characters-table tbody {
+    display: block;
+    min-height: 40vh;
+    width: 49vw;
 }
 
 /* table body rows styling */
