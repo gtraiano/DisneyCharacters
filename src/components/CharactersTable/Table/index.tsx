@@ -6,7 +6,7 @@ import { addPageAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
 import { CharactersTableProps } from '../Table/types';
-import { ShowOverlay } from '../../../events/ShowOverlay';
+import { ShowModal } from '../../../events/ShowModal';
 import Pagination from '../Pagination';
 import { sortFunction, filterFunction, selectRows } from './helpers';
 import { VisibleCharacters } from '../../../events/VisibleCharacters';
@@ -22,7 +22,7 @@ const defaultProps: CharactersTableProps = {
           computedValue: (item: DisneyCharacterData) =>
             <a
                 className={style['name-link']} href=""
-                onClick={(e) => { e.preventDefault(); ShowOverlay.dispatch(item._id)(e.currentTarget); }}
+                onClick={(e) => { e.preventDefault(); ShowModal.dispatch(item._id)(e.currentTarget); }}
             >
                 {item['name']}
             </a>

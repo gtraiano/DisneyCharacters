@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { addPageAsync } from "./store/reducers/charactersPages";
 import { useDispatch } from 'react-redux';
 import CharactersTable from './components/CharactersTable/Table';
-import { ShowOverlay } from './events/ShowOverlay';
+import { ShowModal } from './events/ShowModal';
 import Filter from './components/Filter';
 import Modal from './components/Modal';
 import store from './store';
@@ -28,12 +28,12 @@ function App() {
     };
 
     useEffect(() => {
-        window.addEventListener(ShowOverlay.eventName, onShowOverlay);
+        window.addEventListener(ShowModal.eventName, onShowOverlay);
         // fetch first page
         dispatch(addPageAsync(1));
         
         return () => {
-            window.removeEventListener(ShowOverlay.eventName, onShowOverlay);
+            window.removeEventListener(ShowModal.eventName, onShowOverlay);
         };
     }, []);
     
