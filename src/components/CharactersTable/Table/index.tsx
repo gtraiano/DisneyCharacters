@@ -1,7 +1,7 @@
 import style from './style.module.css';
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import store, { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
+import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
 import { addPageAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
@@ -59,7 +59,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     // columns to sort by
     const [sortBy, setSortBy] = useState<Array<{ colIndex: number, asc: boolean }>>([]);
     // container div reference
-    const containerRef = useRef<HTMLDivElement>();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     // select rows from characters table according to criteria
     const selectTableRows = useCallback(() =>
@@ -88,7 +88,9 @@ const CharactersTable = ({ props = defaultProps }) => {
         containerRef.current?.scrollTo(0, 0);
     }, [currentPage]);
 
-    
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filter]);
 
     // handle left click on sortable column header
     const handleSortOnClick = (index: number) => (e: SyntheticEvent) => {
@@ -126,10 +128,8 @@ const CharactersTable = ({ props = defaultProps }) => {
         // fetch next page from API if last current page is reached
         if(currentPage === Math.ceil(charactersPages.count / itemsPerPage)) {
             const fetchPagesCount = Math.ceil(itemsPerPage / DisneyAPI.paginationItemsPerPage);
-            console.log('pages needed to fetch', fetchPagesCount);
             for(let i = 1; i <= fetchPagesCount; i++) {
                 await dispatch(addPageAsync(charactersPages.pageCount + 1));
-                console.log('fetched page', i);
             }
             setCurrentPage(Math.ceil(charactersPages.count / itemsPerPage) + 1);
         }
@@ -207,10 +207,14 @@ const CharactersTable = ({ props = defaultProps }) => {
             <tbody>
                 {
                     tableRows
-                    .map((row, i) =>                                                        // table row for each array row
+                    .map((row, i) =>    // table row for each array row
                         <tr key={`row_${i}`}>
                             {/* table cells for each array row */}
-                            { props.columns.map((c, j) => <td key={`col_${i}${j}`}>{ c.computedValue ? c.computedValue(row) : row[c.key].toString() } </td>) }
+                            { props.columns.map((c, j) =>
+                                <td key={`col_${i}${j}`}>
+                                    { c.computedValue ? c.computedValue(row) : row[c.key].toString() }
+                                </td>
+                            )}
                         </tr>
                     )
                 }
@@ -225,11 +229,19 @@ const CharactersTable = ({ props = defaultProps }) => {
                 <tr>
                     <td colSpan={props.columns.length}>
                         <Pagination
-                            totalItems={charactersPages.count}
+                            totalItems={
+                                !filter.query?.trim()?.length
+                                    ? charactersPages.count
+                                    : tableRows.length
+                            }
                             itemsPerPage={itemsPerPage}
                             currentPage={currentPage}
                             onChangeItemsPerPage={onChangeItemsPerPage}
-                            onClickNextPage={onClickNextPage}
+                            onClickNextPage={
+                                !filter.query?.trim()?.length
+                                    ? onClickNextPage
+                                    : () => { setCurrentPage(p => p + 1 > Math.ceil(tableRows.length / itemsPerPage) ? p : p + 1); }
+                            }
                             onClickPrevPage={onClickPrevPage}
                             onGoToPage={onGoToPage}
                         />

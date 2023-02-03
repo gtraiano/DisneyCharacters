@@ -55,5 +55,5 @@ export const selectRows = ({
 }: SelectRowsProps) =>
     [...array]                                                                  // work on array copy
         .filter(filterFunction(filter))                                         // filter
-        .sort(sortFunction(columns, sortBy))                                // sort
+        .sort(sortFunction(columns, sortBy))                                    // sort
         .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);   // slice for current page
