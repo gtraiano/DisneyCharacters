@@ -21,7 +21,7 @@ const Filter = ({ styling }: FilterProps) => {
     
     return (
         <div className={style['filter-container']} style={styling}>
-            <label>Search</label>
+            <label>Filter</label>
             <input
                 type='text'
                 value={filter.query ?? ''}
