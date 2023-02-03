@@ -1,7 +1,7 @@
 import style from './style.module.css';
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
+import store, { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
 import { addPageAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
@@ -9,6 +9,8 @@ import { CharactersTableProps } from '../Table/types';
 import { ShowOverlay } from '../../../events/ShowOverlay';
 import Pagination from '../Pagination';
 import { sortFunction, filterFunction, selectRows } from './helpers';
+import { VisibleCharacters } from '../../../events/VisibleCharacters';
+import DisneyAPI from '../../../controllers/DisneyAPI';
 
 // default table props
 const defaultProps: CharactersTableProps = {
@@ -76,6 +78,11 @@ const CharactersTable = ({ props = defaultProps }) => {
         setTableRows(selectTableRows());
     }, [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
 
+    // dispatch visible characters id's on table rows change
+    useEffect(() => {
+        VisibleCharacters.dispatch(tableRows.map(c => c._id))();
+    }, [tableRows]);
+
     // scroll container to top on table page change
     useEffect(() => {
         containerRef.current?.scrollTo(0, 0);
@@ -115,10 +122,18 @@ const CharactersTable = ({ props = defaultProps }) => {
     };
 
     // pagination next page click handler
-    const onClickNextPage = () => {
+    const onClickNextPage = async () => {
         // fetch next page from API if last current page is reached
-        currentPage === Math.ceil(charactersPages.count / itemsPerPage) && dispatch(addPageAsync(charactersPages.currentPage+1));
-        setCurrentPage(p => p + 1);
+        if(currentPage === Math.ceil(charactersPages.count / itemsPerPage)) {
+            const fetchPagesCount = Math.ceil(itemsPerPage / DisneyAPI.paginationItemsPerPage);
+            console.log('pages needed to fetch', fetchPagesCount);
+            for(let i = 1; i <= fetchPagesCount; i++) {
+                await dispatch(addPageAsync(charactersPages.pageCount + 1));
+                console.log('fetched page', i);
+            }
+            setCurrentPage(Math.ceil(charactersPages.count / itemsPerPage) + 1);
+        }
+        else setCurrentPage(p => p + 1);
     };
 
     // pagination previous page click handler

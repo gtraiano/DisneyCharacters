@@ -89,6 +89,7 @@ const fetchCharactersByQuery = async (query: FilterCharacterParams): Promise<Dis
 
 const DisneyAPI = {
     baseUrl,
+    paginationItemsPerPage: 50,
     fetchers: {
         byPage: fetchCharactersPage,
         byId: fetchCharacterById,

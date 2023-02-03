@@ -8,6 +8,8 @@ import Filter from './components/Filter';
 import Modal from './components/Modal';
 import store from './store';
 import CharacterProfile from './components/ChracterProfile';
+import { VisibleCharacters } from './events/VisibleCharacters';
+import PieChart from './components/PieChart';
 
 function App() {
     const dispatch = useDispatch<any>();
@@ -26,7 +28,7 @@ function App() {
         setShowModal(true);
     };
 
-    useEffect(() => {  
+    useEffect(() => {
         window.addEventListener(ShowOverlay.eventName, onShowOverlay);
         // fetch first page
         dispatch(addPageAsync(1));
@@ -40,6 +42,7 @@ function App() {
         <div className="App">
             <CharactersTable />
             <Filter styling={{ marginTop: '1em' }} />
+            <PieChart />
             { showModal && <Modal toggleModal={setShowModal} children={modalContent} />}
         </div>
     )

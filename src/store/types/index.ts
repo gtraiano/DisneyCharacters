@@ -1,7 +1,7 @@
 import { DisneyCharacterData, DisneyCharactersPage } from "../../types/DisneyAPI"
 
 export interface CharactersPagesState extends DisneyCharactersPage {
-    currentPage: number
+    pageCount: number
 }
 
 export enum FetchingStatus {

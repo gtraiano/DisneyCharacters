@@ -8,19 +8,20 @@ import { setStatus, setError } from "./fetcherStatus";
 const initialState: CharactersPagesState = {
     data: [],
     count: 0,
-    currentPage: 0
+    pageCount: 0
 }
 
 const characterPagesSlice = createSlice({
     name: 'charactersPages',
     initialState,
     reducers: {
-        addPage: (state, action) => ({
-            ...action.payload,
-            currentPage: state.currentPage + 1,
-            count: state.count + action.payload.count,
-            data: [...state.data, ...action.payload.data]
-        })
+        addPage: (state, action) => {
+            state.data.push(...action.payload.data);
+            state.previousPage = action.payload.previousPage;
+            state.nextPage = action.payload.nextPage;
+            state.count += action.payload.count;
+            state.pageCount++;
+        }
     }
 });
 
@@ -40,11 +41,10 @@ export const addPageAsync = (pageNum: number | string = 1) => {
         }
         catch (err: any) {
             // show fetching failed and error
-            dispatch(setStatus(FetchingStatus.FAILED));
             dispatch(setError(err.message));
             console.error(err);
         }
-    }
+    };
 };
 
 export default characterPagesSlice.reducer;

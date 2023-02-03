@@ -16,6 +16,7 @@ const fetcherStatusSlice = createSlice({
             state.status = action.payload;
         },
         setError: (state, action) => {
+            state.status = FetchingStatus.FAILED;
             state.error = action.payload;
         }
     }
