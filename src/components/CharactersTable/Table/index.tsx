@@ -23,7 +23,7 @@ const defaultProps: CharactersTableProps = {
           computedValue: (item: DisneyCharacterData) =>
             <a
                 className={style['name-link']} href=""
-                onClick={(e) => { e.preventDefault(); ShowModal.dispatch(item._id)(e.currentTarget); }}
+                onClick={(e) => { e.preventDefault(); eventBus.emit(ShowModal.eventName, item._id); }}
             >
                 {item['name']}
             </a>
