@@ -2,5 +2,5 @@
 // used to pass character id's
 export const VisibleCharacters = {
     eventName: 'visibleCharacters',
-    dispatch: (detail: number[]) => (e?: HTMLElement) => { (e ?? document).dispatchEvent(new CustomEvent(VisibleCharacters.eventName, { bubbles: true, detail })) }
+    //dispatch: (detail: number[]) => (e?: HTMLElement) => { (e ?? document).dispatchEvent(new CustomEvent(VisibleCharacters.eventName, { bubbles: true, detail })) }
 };

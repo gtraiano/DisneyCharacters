@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react"
-import { VisibleCharacters } from "../../events/VisibleCharacters";
 import store from "../../store";
 import Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
 import ExportData from 'highcharts/modules/export-data';
+import { VisibleCharacters } from "../../eventbus/events/VisibleCharacters";
+import eventBus from "../../eventbus";
 
 Exporting(Highcharts);
 ExportData(Highcharts); // for csv export
@@ -41,9 +42,9 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     };
     
     useEffect(() => {
-        document.addEventListener(VisibleCharacters.eventName, onVisibleCharacters);
+        eventBus.on(VisibleCharacters.eventName, onVisibleCharacters);
         return () => {
-            document.removeEventListener(VisibleCharacters.eventName, onVisibleCharacters);
+            eventBus.off(VisibleCharacters.eventName, onVisibleCharacters);
             pieChart.current?.destroy();
         }
     }, []);

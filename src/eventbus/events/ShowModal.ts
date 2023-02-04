@@ -3,5 +3,5 @@
 // necessary because computedValue in CharactersTableProps does not receive a callback
 export const ShowModal = {
     eventName: 'showModal',
-    dispatch: (detail: any) => (e?: HTMLElement) => { (e ?? document).dispatchEvent(new CustomEvent(ShowModal.eventName, { bubbles: true, detail })) }
+    //dispatch: (detail: any) => (e?: HTMLElement) => { (e ?? document).dispatchEvent(new CustomEvent(ShowModal.eventName, { bubbles: true, detail })) }
 };

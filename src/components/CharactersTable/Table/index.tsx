@@ -6,11 +6,12 @@ import { addPageAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
 import { CharactersTableProps } from '../Table/types';
-import { ShowModal } from '../../../events/ShowModal';
 import Pagination from '../Pagination';
 import { sortFunction, filterFunction, selectRows } from './helpers';
-import { VisibleCharacters } from '../../../events/VisibleCharacters';
 import DisneyAPI from '../../../controllers/DisneyAPI';
+import { VisibleCharacters } from '../../../eventbus/events/VisibleCharacters';
+import { ShowModal } from '../../../eventbus/events/ShowModal';
+import eventBus from '../../../eventbus';
 
 // default table props
 const defaultProps: CharactersTableProps = {
@@ -77,10 +78,10 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     useEffect(() => {
         if(containerRef.current) {
-            window.addEventListener('resize', setTableBodyWidth);
-            return () => {
-                window.removeEventListener('resize', setTableBodyWidth);
-            }
+            window.addEventListener('resize', setTableBodyWidth);   
+        }
+        return () => {
+            window.removeEventListener('resize', setTableBodyWidth);
         }
     }, []);
 
@@ -95,7 +96,8 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     // dispatch visible characters id's on table rows change
     useEffect(() => {
-        VisibleCharacters.dispatch(tableView.map(c => c._id))();
+        eventBus.emit(VisibleCharacters.eventName, tableView.map(c => c._id));
+        //VisibleCharacters.dispatch(tableView.map(c => c._id))();
     }, [tableView]);
 
     // scroll container to top on table page change

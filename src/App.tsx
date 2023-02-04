@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { addPageAsync } from "./store/reducers/charactersPages";
 import { useDispatch } from 'react-redux';
 import CharactersTable from './components/CharactersTable/Table';
-import { ShowModal } from './events/ShowModal';
 import Filter from './components/Filter';
 import Modal from './components/Modal';
 import store from './store';
 import CharacterProfile from './components/ChracterProfile';
 import PieChart from './components/PieChart';
+import { ShowModal } from './eventbus/events/ShowModal';
+import eventBus from './eventbus';
 
 function App() {
     const dispatch = useDispatch<any>();
@@ -28,12 +29,12 @@ function App() {
     };
 
     useEffect(() => {
-        window.addEventListener(ShowModal.eventName, onShowOverlay);
+        eventBus.on(ShowModal.eventName, onShowOverlay);
         // fetch first page
         dispatch(addPageAsync(1));
         
         return () => {
-            window.removeEventListener(ShowModal.eventName, onShowOverlay);
+            eventBus.off(ShowModal.eventName, onShowOverlay);
         };
     }, []);
     
