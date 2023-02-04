@@ -72,8 +72,8 @@ const CharactersTable = ({ props = defaultProps }) => {
             pagination: { currentPage, itemsPerPage }
         })
     , [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
-    // local copy of characters table rows
-    const [tableRows, setTableRows] = useState<DisneyCharacterData[]>(() => selectTableRows());
+    // table view (current page, after sorting & filtering)
+    const [tableView, setTableView] = useState<DisneyCharacterData[]>(() => selectTableRows());
 
     useEffect(() => {
         if(containerRef.current) {
@@ -86,17 +86,17 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     useEffect(() => {
         setTableBodyWidth();
-    }, [props.columns, tableRows.length]);
+    }, [props.columns, tableView.length]);
 
     // update table view
     useEffect(() => {
-        setTableRows(selectTableRows());
+        setTableView(selectTableRows());
     }, [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
 
     // dispatch visible characters id's on table rows change
     useEffect(() => {
-        VisibleCharacters.dispatch(tableRows.map(c => c._id))();
-    }, [tableRows]);
+        VisibleCharacters.dispatch(tableView.map(c => c._id))();
+    }, [tableView]);
 
     // scroll container to top on table page change
     useEffect(() => {
@@ -121,7 +121,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     };
 
     // handle left click on sortable column header
-    const handleSortOnClick = (index: number) => (e: SyntheticEvent) => {
+    const handleSortableHeaderOnClick = (index: number) => (e: SyntheticEvent) => {
         // only for left click
         if((e.nativeEvent as MouseEvent).button !== 0) return;
         // lookup column entry in sortBy
@@ -136,7 +136,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     };
 
     // handle right click on sortable column header
-    const handleSortFieldOnContext = (index: number) => (e: SyntheticEvent) => {
+    const handleSortableHeaderOnContext = (index: number) => (e: SyntheticEvent) => {
         e.preventDefault();
         if(!sortBy.length) return;
         // remove column entry
@@ -218,8 +218,8 @@ const CharactersTable = ({ props = defaultProps }) => {
                     <th
                         key={`col_${c.label}`}
                         className={c.sortable ? style['sortable'] : undefined}
-                        onClick={c.sortable ? handleSortOnClick(i) : undefined }
-                        onContextMenu={c.sortable ? handleSortFieldOnContext(i) : (e) => { e.preventDefault(); }}
+                        onClick={c.sortable ? handleSortableHeaderOnClick(i) : undefined }
+                        onContextMenu={c.sortable ? handleSortableHeaderOnContext(i) : (e) => { e.preventDefault(); }}
                     >
                         {c.label}
                     </th>
@@ -234,7 +234,7 @@ const CharactersTable = ({ props = defaultProps }) => {
         return (
             <tbody>
                 {
-                    tableRows
+                    tableView
                     .map((row, i) =>    // table row for each array row
                         <tr key={`row_${i}`}>
                             {/* table cells for each array row */}
@@ -260,7 +260,7 @@ const CharactersTable = ({ props = defaultProps }) => {
                             totalItems={
                                 !filter.query?.trim()?.length
                                     ? charactersPages.count
-                                    : tableRows.length
+                                    : tableView.length
                             }
                             itemsPerPage={itemsPerPage}
                             currentPage={currentPage}
@@ -268,7 +268,7 @@ const CharactersTable = ({ props = defaultProps }) => {
                             onClickNextPage={
                                 !filter.query?.trim()?.length
                                     ? onClickNextPage
-                                    : () => { setCurrentPage(p => p + 1 > Math.ceil(tableRows.length / itemsPerPage) ? p : p + 1); }
+                                    : () => { setCurrentPage(p => p + 1 > Math.ceil(tableView.length / itemsPerPage) ? p : p + 1); }
                             }
                             onClickPrevPage={onClickPrevPage}
                             onGoToPage={onGoToPage}
