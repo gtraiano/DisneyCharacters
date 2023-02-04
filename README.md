@@ -89,7 +89,7 @@ interface EventBus {
 
 ### Events
 #### **`showModal`**
-Signals modal must be displayed. No payload required.
+Signals modal must be displayed. Character id is required as payload.
 #### **`visibleCharacters`**
 Signals change of the table view in `CharactersTable`. The dispatched event includes all viewable characters' id's as payload.
 
