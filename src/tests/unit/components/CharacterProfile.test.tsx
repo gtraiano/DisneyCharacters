@@ -37,8 +37,11 @@ describe('CharacterProfile', () => {
         // name
         expect(container.querySelector(`.${style['stats']} > h2`)?.textContent).toMatch(content.name);
         // # of allies, enemies, park attractions
-        expect([...container.querySelectorAll(`.${style['stats']} > span`)].map(sp => Number.parseInt(sp.textContent?.match(/\d+/))))
-            .toEqual([content.allies.length, content.enemies.length, content.parkAttractions.length]);
+        expect(
+            [...container.querySelectorAll(`.${style['stats']} > span`)]
+                .map( sp => Number.parseInt( ((sp.textContent as string).match(/\d+/) as RegExpMatchArray)[0] ?? '') )
+        )
+        .toEqual([content.allies.length, content.enemies.length, content.parkAttractions.length]);
         // tv shows list
         expect(container.querySelector(`.${style['tv-shows']}`)?.childElementCount).toBe(content.tvShows.length);
         // video games list
