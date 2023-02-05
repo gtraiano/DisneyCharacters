@@ -6,6 +6,8 @@ interface CharacterProfileProps {
 }
 
 const CharacterProfile = ({ character }: CharacterProfileProps) => {
+    if(!character) return null;
+
     return (
         <div className={style['profile-container']}>
             <div className={style['info']}>
@@ -21,19 +23,19 @@ const CharacterProfile = ({ character }: CharacterProfileProps) => {
             <h3>TV shows</h3>
             {
                 character.tvShows.length
-                ? <ul>
+                ? <ul className={style['tv-shows']}>
                     {character?.tvShows.map((s, i) => <li key={i}>{s}</li>)}
                   </ul>
-                : <span className={style['none']}>None</span>
+                : <span className={`${style['tv-shows']} ${style['none']}`}>None</span>
             }
                 
             <h3>Video games</h3>
             {
                 character.videoGames.length
-                ? <ul>
+                ? <ul className={style['video-games']}>
                     {character.videoGames.map((s, i) => <li key={i}>{s}</li>)}
                     </ul>
-                : <span className={style['none']}>None</span>
+                : <span className={`${style['video-games']} ${style['none']}`}>None</span>
             }
         </div>
     )

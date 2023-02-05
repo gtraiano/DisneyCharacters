@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import DisneyAPI from '../../controllers/DisneyAPI';
-import { DisneyCharacterData } from '../../types/DisneyAPI';
+import DisneyAPI from '../../../controllers/DisneyAPI';
+import { DisneyCharacterData } from '../../../types/DisneyAPI';
 
 describe('DinseyAPI controller', () => {
     describe('DisneyAPI.fetchers.byPage', () => {
