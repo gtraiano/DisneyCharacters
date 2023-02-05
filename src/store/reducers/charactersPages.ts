@@ -1,6 +1,7 @@
 import { createSlice, Dispatch } from "@reduxjs/toolkit";
 import DisneyAPI from "../../controllers/DisneyAPI";
-import { CharactersPagesState, FetchingStatus } from "../types";
+import { DisneyCharacterData, DisneyCharactersPage } from "../../types/DisneyAPI";
+import { CharactersPagesState, FetchingStatus, StoreState } from "../types";
 import { setStatus, setError } from "./fetcherStatus";
 
 // holds Disney characters pages
@@ -8,7 +9,8 @@ import { setStatus, setError } from "./fetcherStatus";
 const initialState: CharactersPagesState = {
     data: [],
     count: 0,
-    pageCount: 0
+    pageCount: 0,
+    totalPages: 0
 }
 
 const characterPagesSlice = createSlice({
@@ -21,13 +23,14 @@ const characterPagesSlice = createSlice({
             state.nextPage = action.payload.nextPage;
             state.count += action.payload.count;
             state.pageCount++;
+            state.totalPages = action.payload.totalPages;
         }
     }
 });
 
 export const { addPage } = characterPagesSlice.actions;
 
-// async call to Disney API
+// async call to Disney API by page number
 export const addPageAsync = (pageNum: number | string = 1) => {
     return async (dispatch: Dispatch<any>) => {
         try {
@@ -44,6 +47,21 @@ export const addPageAsync = (pageNum: number | string = 1) => {
             dispatch(setError(err.message));
             console.error(err);
         }
+    };
+};
+
+// append count pages after state current page number
+export const appendMultiplePagesAsync = (count: number = 1) => {
+    return async (dispatch: Dispatch<any>, getState: () => StoreState) => {
+        // page numbers to be fetched
+        const pageNums = new Array(count).fill(0)
+            .map((_n, i) => getState().charactersPages.pageCount + i + 1)
+            .filter(pn => pn <= getState().charactersPages.totalPages);     // make sure we don't exceed max page number
+                                                                            // (alternatively, we could check the nextPage property after the API request)
+
+        pageNums.forEach(async (p) => {
+            await dispatch(addPageAsync(p));
+        });
     };
 };
 

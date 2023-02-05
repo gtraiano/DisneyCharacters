@@ -28,10 +28,11 @@ export interface DisneyCharacterData {
 
 // characters page data
 export interface DisneyCharactersPage {
-    data: DisneyCharacterData[],
-    count: number,
-    previousPage?: string,
-    nextPage?: string,
+    data: DisneyCharacterData[],    // characters data
+    count: number,                  // number of characters fetched
+    previousPage?: string,          // previous page url
+    nextPage?: string,              // next page url
+    totalPages: number              // end page number (i.e. the max page number the API will serve)
 };
 
 // filter page data

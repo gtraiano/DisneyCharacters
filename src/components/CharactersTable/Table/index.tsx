@@ -2,7 +2,7 @@ import style from './style.module.css';
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
-import { addPageAsync } from '../../../store/reducers/charactersPages';
+import { appendMultiplePagesAsync, addPageAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
 import { CharactersTableProps } from '../Table/types';
@@ -157,10 +157,9 @@ const CharactersTable = ({ props = defaultProps }) => {
     const onClickNextPage = async () => {
         // fetch next page from API if last current page is reached
         if(currentPage === Math.ceil(charactersPages.count / itemsPerPage)) {
+            // determine number of pages to fetch from API (note: API sends 50 characters per page)
             const fetchPagesCount = Math.ceil(itemsPerPage / DisneyAPI.paginationItemsPerPage);
-            for(let i = 1; i <= fetchPagesCount; i++) {
-                await dispatch(addPageAsync(charactersPages.pageCount + 1));
-            }
+            await dispatch(appendMultiplePagesAsync(fetchPagesCount));
             setCurrentPage(Math.ceil(charactersPages.count / itemsPerPage) + 1);
         }
         else setCurrentPage(p => p + 1);
