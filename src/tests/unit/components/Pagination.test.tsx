@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SyntheticEvent } from 'react';
+import { vi } from 'vitest';
 import Pagination from '../../../components/CharactersTable/Pagination'
 
 
@@ -39,7 +40,8 @@ describe('Pagination', () => {
         });
 
         test('click on next page caret executes onClickNextPage callback and updates page display', async () => {
-            const { container, rerender } = render(pagination);
+            const spy = vi.fn().mockImplementation(onClickNextPage);
+            const { container, rerender } = render({ ...pagination, props: { ...pagination.props, onClickNextPage: spy } });
             const expected = currentPage + 1;
         
             const [nextPageCaret] = [...container.querySelectorAll('li')].filter(li => /next-page/i.test(li.className));
@@ -49,13 +51,15 @@ describe('Pagination', () => {
 
             rerender({ ...pagination, props: { ...pagination.props, currentPage } });
             
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(currentPage).toBe(expected);
             //expect(display?.textContent).toMatch(`${expected} / ${Math.ceil(totalItems / itemsPerPage)}`);
             expect((await screen.findByText(/\d+ \/ \d+/)).textContent).toMatch(`${expected} / ${Math.ceil(totalItems / itemsPerPage)}`);
         });
 
         test('click on previous page caret executes onClickPrevPage callback and updates page dsiplay', async () => {
-            const { container, rerender } = render(pagination);
+            const spy = vi.fn().mockImplementation(onClickPrevPage);
+            const { container, rerender } = render({ ...pagination, props: { ...pagination.props, onClickPrevPage: spy } });
             const expected = currentPage - 1;
         
             const [prevPageCaret] = [...container.querySelectorAll('li')].filter(li => /prev-page/gi.test(li.className));
@@ -64,6 +68,7 @@ describe('Pagination', () => {
             rerender({ ...pagination, props: { ...pagination.props, currentPage } });
             //const display = container.querySelector('li:nth-child(2)');
             
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(currentPage).toBe(expected);
             expect((await screen.findByText(/\d+ \/ \d+/)).textContent).toMatch(`${expected} / ${Math.ceil(totalItems / itemsPerPage)}`)
             //expect(display?.textContent).toMatch(`${expected} / ${Math.ceil(totalItems / itemsPerPage)}`);
@@ -84,10 +89,13 @@ describe('Pagination', () => {
         });
     
         test('change items per page executes onChangeItemsPerPage callback', () => {
-            const { container } = render(pagination);
+            const spy = vi.fn().mockImplementation(onChangeItemsPerPage);
+            const { container } = render({ ...pagination, props: { ...pagination.props, onChangeItemsPerPage: spy } });
           
             const select = container.querySelector('select');
             fireEvent.change(select as HTMLSelectElement, { target: { value: defaultsOptions[0] } });
+            
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(itemsPerPage).toBe(defaultsOptions[0]);
         });
     });
