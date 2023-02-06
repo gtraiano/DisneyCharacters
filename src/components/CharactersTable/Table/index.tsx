@@ -2,7 +2,7 @@ import style from './style.module.css';
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
-import { appendMultiplePagesAsync, addPageAsync } from '../../../store/reducers/charactersPages';
+import { appendMultiplePagesAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
 import { CharactersTableProps } from '../Table/types';
