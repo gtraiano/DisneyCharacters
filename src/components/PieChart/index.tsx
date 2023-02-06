@@ -5,7 +5,6 @@ import Exporting from 'highcharts/modules/exporting';
 import ExportData from 'highcharts/modules/export-data';
 import { VisibleCharacters } from "../../eventbus/events/VisibleCharacters";
 import eventBus from "../../eventbus";
-import { ShowModal } from "../../eventbus/events/ShowModal";
 
 Exporting(Highcharts);
 ExportData(Highcharts); // for csv export
@@ -26,34 +25,12 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
 
     const onVisibleCharacters = (e: Event) => {
         const ids: number[] = (e as CustomEvent).detail;
-        if(!ids?.length) return;
+        // save id's to local state
         setVisibleIds(ids);
-        // gather required data for visible characters id's
-        const characters = ids
-            .flatMap(id => store.getState().charactersPages.data.find(c => c._id === id) ?? [])
-            .map(c => ({
-                name: c.name,
-                y: c.films.length,
-                films: c.films.join('<br>') // all film titles joined with HTML line break
-            }));
-        // update chart
-        if(pieChart.current) {
-            pieChart.current.showLoading('calculating');
-            pieChart.current.series[0].setData(characters);
-            pieChart.current.redraw();
-            pieChart.current.hideLoading();
-        }
-    };
-
-    const onModalShow = () => {
-        // [fixes bug] when modal opens only for the first time, the chart loses its content
-        eventBus.emit(VisibleCharacters.eventName, visibleIds);
-        setVisibleIds([]);
     };
     
     useEffect(() => {
         eventBus.on(VisibleCharacters.eventName, onVisibleCharacters);
-        eventBus.once(ShowModal.eventName, onModalShow);
         return () => {
             eventBus.off(VisibleCharacters.eventName, onVisibleCharacters);
             pieChart.current?.destroy();
@@ -121,6 +98,25 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
             });
         }
     }, [containerRef.current]);
+
+    // render chart for visibleIds
+    useEffect(() => {
+        // gather character data from store and format it as highchart series data
+        const characters = visibleIds
+            .flatMap(id => store.getState().charactersPages.data.find(c => c._id === id) ?? [])
+            .map(c => ({
+                name: c.name,
+                y: c.films.length,
+                films: c.films.join('<br>') // all film titles joined with HTML line break
+            }));
+        // update chart
+        if(pieChart.current) {
+            pieChart.current.showLoading('calculating');
+            pieChart.current.series[0].setData(characters);
+            pieChart.current.redraw();
+            pieChart.current.hideLoading();
+        }
+    }, [visibleIds]);
 
     useEffect(() => {
         pieChart.current?.reflow();
