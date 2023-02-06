@@ -74,7 +74,7 @@ const CharactersTable = ({ props = defaultProps }) => {
         })
     , [charactersPages.data, filter, sortBy, currentPage, itemsPerPage]);
     // table view (current page, after sorting & filtering)
-    const [tableView, setTableView] = useState<DisneyCharacterData[]>(() => selectTableRows());
+    const [tableView, setTableView] = useState<DisneyCharacterData[]>(selectTableRows());
 
     useEffect(() => {
         if(containerRef.current) {
@@ -123,7 +123,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     };
 
     // handle left click on sortable column header
-    const handleSortableHeaderOnClick = (index: number) => (e: SyntheticEvent) => {
+    const sortableHeaderOnClick = (index: number) => (e: SyntheticEvent) => {
         // only for left click
         if((e.nativeEvent as MouseEvent).button !== 0) return;
         // lookup column entry in sortBy
@@ -138,7 +138,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     };
 
     // handle right click on sortable column header
-    const handleSortableHeaderOnContext = (index: number) => (e: SyntheticEvent) => {
+    const sortableHeaderOnContext = (index: number) => (e: SyntheticEvent) => {
         e.preventDefault();
         if(!sortBy.length) return;
         // remove column entry
@@ -219,8 +219,8 @@ const CharactersTable = ({ props = defaultProps }) => {
                     <th
                         key={`col_${c.label}`}
                         className={c.sortable ? style['sortable'] : undefined}
-                        onClick={c.sortable ? handleSortableHeaderOnClick(i) : undefined }
-                        onContextMenu={c.sortable ? handleSortableHeaderOnContext(i) : (e) => { e.preventDefault(); }}
+                        onClick={c.sortable ? sortableHeaderOnClick(i) : undefined }
+                        onContextMenu={c.sortable ? sortableHeaderOnContext(i) : (e) => { e.preventDefault(); }}
                     >
                         {c.label}
                     </th>
