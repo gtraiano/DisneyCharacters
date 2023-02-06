@@ -23,12 +23,12 @@ Try [live demo](https://disney-characters.onrender.com/)
          - The names of the allies this character has.
          - The names of the enemies this character has. 
     - Table functionality
-        -  The user should be able to select to display [10,20,50,100,200 and 500 ] characters per page.
+        -  The user should be able to select to display [10,20,50,100,200 and 500] characters per page.
         - The user should be able to navigate to the next or previous page.
         - Each page should display 50 characters initially.
         - The user should be able to search and find a desired character across all available characters.
         - The user should be able to find a character participating in a TV show.
-        - The user should be able to sort the list of characters per page by name
+        - The user should be able to sort the list of characters per page by name.
 
 2. As a user I would like to see the details of a character by selecting a table row element, on a modal.
     - Inside the modal should be present
@@ -38,7 +38,7 @@ Try [live demo](https://disney-characters.onrender.com/)
   
 3. As a user I would like to be able to see on a PIE chart every table page character results.
     - Each portion of the chart should be the number of films each character participates in.
-    - When hovering on a portion it should be displayed the percentage of the portion and the list of films.
+    - When hovering on a portion the percentage of the portion and the list of films should be displayed.
     - The user should be able to export the data of the chart in a xlsx file.
     - Each time the table view changes the chart should be updated accordingly.
 
@@ -81,9 +81,10 @@ type EventKey = string;
 type EventHandler = (payload?: any) => void;
 
 interface EventBus {
-    on: (event: EventKey, callback: EventHandler) => void,  // add listener
-    emit: (event: EventKey, data: any) => void,             // dispatch event
-    off: (event: EventKey, callback: EventHandler) => void  // remove listener
+    on: (event: EventKey, callback: EventHandler) => void,      // add listener
+    once: (event: EventKey, callback: EventHandler) => void,    // handler will be invoked only once
+    emit: (event: EventKey, data?: any) => void,                // dispatch event
+    off: (event: EventKey, callback: EventHandler) => void      // remove listener
 };
 ```
 

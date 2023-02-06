@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import store from "../../store";
 import Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
 import ExportData from 'highcharts/modules/export-data';
 import { VisibleCharacters } from "../../eventbus/events/VisibleCharacters";
 import eventBus from "../../eventbus";
+import { ShowModal } from "../../eventbus/events/ShowModal";
 
 Exporting(Highcharts);
 ExportData(Highcharts); // for csv export
@@ -20,10 +21,13 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     // reference to pie chart
     const pieChart = useRef<Highcharts.Chart>();
+    // visible character id's
+    const [visibleIds, setVisibleIds] = useState<number[]>([]);
 
     const onVisibleCharacters = (e: Event) => {
         const ids: number[] = (e as CustomEvent).detail;
         if(!ids?.length) return;
+        setVisibleIds(ids);
         // gather required data for visible characters id's
         const characters = ids
             .flatMap(id => store.getState().charactersPages.data.find(c => c._id === id) ?? [])
@@ -40,9 +44,16 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
             pieChart.current.hideLoading();
         }
     };
+
+    const onModalShow = () => {
+        // [fixes bug] when modal opens only for the first time, the chart loses its content
+        eventBus.emit(VisibleCharacters.eventName, visibleIds);
+        setVisibleIds([]);
+    };
     
     useEffect(() => {
         eventBus.on(VisibleCharacters.eventName, onVisibleCharacters);
+        eventBus.once(ShowModal.eventName, onModalShow);
         return () => {
             eventBus.off(VisibleCharacters.eventName, onVisibleCharacters);
             pieChart.current?.destroy();
