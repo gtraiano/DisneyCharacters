@@ -90,7 +90,7 @@
 /* set to block in order to be able to set min-height */
 .characters-table tbody {
     display: block;
-    min-height: 40vh;
+    min-height: 41vh;
     width: 49vw;
 }
 
