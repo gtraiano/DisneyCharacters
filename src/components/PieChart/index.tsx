@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-import store from "../../store";
+import { useSelector } from "react-redux";
+import { selectCharactersPages, selectFetcherStatus } from "../../store";
 import Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
 import ExportData from 'highcharts/modules/export-data';
 import { VisibleCharacters } from "../../eventbus/events/VisibleCharacters";
 import eventBus from "../../eventbus";
+import { FetchingStatus } from "../../store/types";
 
 Exporting(Highcharts);
 ExportData(Highcharts); // for csv export
@@ -22,6 +24,8 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     const pieChart = useRef<Highcharts.Chart>();
     // visible character id's
     const [visibleIds, setVisibleIds] = useState<number[]>([]);
+    const charactersPages = useSelector(selectCharactersPages);
+    const fetcherStatus = useSelector(selectFetcherStatus);
 
     const onVisibleCharacters = (e: Event) => {
         const ids: number[] = (e as CustomEvent).detail;
@@ -101,9 +105,11 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
 
     // render chart for visibleIds
     useEffect(() => {
+        // prevent flashing when fetching page from API
+        if(fetcherStatus.status === FetchingStatus.LOADING && !visibleIds.length) return;
         // gather character data from store and format it as highchart series data
         const characters = visibleIds
-            .flatMap(id => store.getState().charactersPages.data.find(c => c._id === id) ?? [])
+            .flatMap(id => charactersPages.data.find(c => c._id === id) ?? [])
             .map(c => ({
                 name: c.name,
                 y: c.films.length,
@@ -123,7 +129,7 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     }, [width, height]);
     
     return (
-        <div ref={containerRef} style={{ width: width ?? '40vw', height: height ?? 'auto', ...containerStyling }} />
+        <div className="pie-chart" ref={containerRef} style={{ width: width ?? '40vw', height: height ?? 'auto', ...containerStyling }} />
     );
 };
 
