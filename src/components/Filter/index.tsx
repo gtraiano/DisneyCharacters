@@ -28,7 +28,7 @@ const Filter = ({ styling }: FilterProps) => {
                 onChange={e => { dispatch(setQuery(e.currentTarget.value)); }}
             />
             <span title='clear query' onClick={() => { dispatch(clearQuery()); } } />
-            <select title='filter by' onChange={e => { dispatch(setField(e.target.value)); }}>
+            <select title='filter by' value={filter.key} onChange={e => { dispatch(setField(e.target.value)); }}>
                 { fields.map(({ key, label }) => <option key={`field_${key}`} value={key} label={label} />) }
             </select>
         </div>
