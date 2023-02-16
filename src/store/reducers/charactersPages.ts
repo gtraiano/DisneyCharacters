@@ -24,11 +24,20 @@ const characterPagesSlice = createSlice({
             state.count += action.payload.count;
             state.pageCount++;
             state.totalPages = action.payload.totalPages;
+        },
+
+        clear: (state) => {
+            state.data = [];
+            state.previousPage = undefined;
+            state.nextPage = undefined;
+            state.count = 0;
+            state.pageCount = 0;
+            state.totalPages = 0;
         }
     }
 });
 
-export const { addPage } = characterPagesSlice.actions;
+export const { addPage, clear } = characterPagesSlice.actions;
 
 // async call to Disney API by page number
 export const addPageAsync = (pageNum: number | string = 1) => {
