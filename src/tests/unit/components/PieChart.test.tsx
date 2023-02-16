@@ -1,9 +1,8 @@
-import { createEvent, render, fireEvent, act } from '@testing-library/react'
-import { useEffect } from 'react';
-import { Provider, useSelector } from 'react-redux';
+import { createEvent, render, fireEvent } from '@testing-library/react'
+import { Provider } from 'react-redux';
 import PieChart from '../../../components/PieChart';
 import { VisibleCharacters } from '../../../eventbus/events/VisibleCharacters';
-import store, { selectCharactersPages } from '../../../store';
+import store from '../../../store';
 import { addPage } from '../../../store/reducers/charactersPages';
 
 
@@ -56,7 +55,7 @@ describe('PieChart', () => {
         expect(container.querySelector('.highcharts-series-0')?.childElementCount).toBe(1);
     });
 
-    test('event fired', () => {
+    test(`${VisibleCharacters} event fired`, () => {
         const wrapped = <Provider store={store}><PieChart/></Provider>;
         const { container, rerender } = render(wrapped);
         
@@ -69,7 +68,7 @@ describe('PieChart', () => {
         
         // visibleCharacters event
         const event = createEvent(
-            VisibleCharacters.eventName,
+            VisibleCharacters,
             document,
             {
               detail: store.getState().charactersPages.data.map(c => c._id),
@@ -87,4 +86,3 @@ describe('PieChart', () => {
           .toEqual(store.getState().charactersPages.data.filter(c => c.films.length > 0).map(c => c.name).sort())
     })
 });
-
