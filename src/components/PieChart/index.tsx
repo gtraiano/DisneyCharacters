@@ -34,9 +34,9 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     };
     
     useEffect(() => {
-        eventBus.on(VisibleCharacters.eventName, onVisibleCharacters);
+        eventBus.on(VisibleCharacters, onVisibleCharacters);
         return () => {
-            eventBus.off(VisibleCharacters.eventName, onVisibleCharacters);
+            eventBus.off(VisibleCharacters, onVisibleCharacters);
             pieChart.current?.destroy();
         }
     }, []);

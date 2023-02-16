@@ -29,12 +29,12 @@ function App() {
     };
 
     useEffect(() => {
-        eventBus.on(ShowModal.eventName, onShowOverlay);
+        eventBus.on(ShowModal, onShowOverlay);
         // fetch first page
         dispatch(addPageAsync(1));
         
         return () => {
-            eventBus.off(ShowModal.eventName, onShowOverlay);
+            eventBus.off(ShowModal, onShowOverlay);
         };
     }, []);
     

@@ -56,7 +56,7 @@ const Pagination = ({
             <div className={style['go-to-page']}>
                 <label>Go to page</label>
                 <input
-                    type='number'
+                    type='text'
                     onKeyDown={onGoToPage}
                     onBlur={e => { e.target.value = '' }}
                 />

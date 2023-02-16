@@ -23,7 +23,7 @@ const defaultProps: CharactersTableProps = {
           computedValue: (item: DisneyCharacterData) =>
             <a
                 className={style['name-link']} href=""
-                onClick={(e) => { e.preventDefault(); eventBus.emit(ShowModal.eventName, item._id); }}
+                onClick={(e) => { e.preventDefault(); eventBus.emit(ShowModal, item._id); }}
             >
                 {item['name']}
             </a>
@@ -96,13 +96,14 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     // dispatch visible characters id's on table rows change
     useEffect(() => {
-        eventBus.emit(VisibleCharacters.eventName, tableView.map(c => c._id));
+        eventBus.emit(VisibleCharacters, tableView.map(c => c._id));
         //VisibleCharacters.dispatch(tableView.map(c => c._id))();
     }, [tableView]);
 
     // scroll container to top on table page change
     useEffect(() => {
-        containerRef.current?.scrollTo(0, 0);
+        if(containerRef.current instanceof HTMLDivElement && containerRef.current.scrollTo) containerRef.current.scrollTo(0,0)
+        //containerRef.current?.scrollTo(0, 0);
     }, [currentPage]);
 
     useEffect(() => {
@@ -181,26 +182,20 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     // go to page input handler
     const onGoToPage = (e: SyntheticEvent) => {
-        // prevent arrow keys up/down default behaviour
-        if((e.nativeEvent as KeyboardEvent).code === 'ArrowDown' || (e.nativeEvent as KeyboardEvent).code === 'ArrowUp') {
-            return e.preventDefault();
-        }
         // process value on Enter
         if((e.nativeEvent as KeyboardEvent).code === 'Enter' || (e.nativeEvent as KeyboardEvent).code === 'NumpadEnter') {
             let value = Number.parseInt((e.currentTarget as HTMLInputElement).value);
-            // not a number or invalid range
+            // number is in valid range
             if(
-                Number.isNaN(value)
-                || value > Math.ceil(charactersPages.count / itemsPerPage)
-                || value < 1
+                !(
+                    Number.isNaN(value)
+                    || value > Math.ceil(charactersPages.count / itemsPerPage)
+                    || value < 1
+                )
             ) {
-                (e.currentTarget as HTMLInputElement).blur();
-            }
-            // ok, proceed
-            else {
                 setCurrentPage(value);
             }
-            (e.currentTarget as HTMLInputElement).value = '';
+            (e.currentTarget as HTMLInputElement).blur();
         }
     };
 
