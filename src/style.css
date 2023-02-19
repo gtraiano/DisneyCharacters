@@ -40,7 +40,3 @@ body {
     font-weight: bold;
     color: rgb(237, 37, 78); /* colour lifted from API home page header */
 }
-
-.attribution > a:visited {
-    color: none;
-}
