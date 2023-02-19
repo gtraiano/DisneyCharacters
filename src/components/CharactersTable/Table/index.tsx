@@ -97,13 +97,11 @@ const CharactersTable = ({ props = defaultProps }) => {
     // dispatch visible characters id's on table rows change
     useEffect(() => {
         eventBus.emit(VisibleCharacters, tableView.map(c => c._id));
-        //VisibleCharacters.dispatch(tableView.map(c => c._id))();
     }, [tableView]);
 
     // scroll container to top on table page change
     useEffect(() => {
         if(containerRef.current instanceof HTMLDivElement && containerRef.current.scrollTo) containerRef.current.scrollTo(0,0)
-        //containerRef.current?.scrollTo(0, 0);
     }, [currentPage]);
 
     useEffect(() => {
