@@ -67,10 +67,10 @@ export const appendMultiplePagesAsync = (count: number = 1) => {
             .map((_n, i) => getState().charactersPages.pageCount + i + 1)
             .filter(pn => pn <= getState().charactersPages.totalPages);     // make sure we don't exceed max page number
                                                                             // (alternatively, we could check the nextPage property after the API request)
-
-        pageNums.forEach(async (p) => {
-            await dispatch(addPageAsync(p));
-        });
+        // sequential processing of thunks (source: https://medium.com/swlh/sequential-and-parallel-asynchronous-functions-35b6d0a0d0f9)
+        await pageNums.reduce(async (_p, n) => {
+            await dispatch(addPageAsync(n));
+        }, Promise.resolve());
     };
 };
 

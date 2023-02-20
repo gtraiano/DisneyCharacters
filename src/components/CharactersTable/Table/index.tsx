@@ -163,9 +163,8 @@ const CharactersTable = ({ props = defaultProps }) => {
             // determine number of pages to fetch from API (note: API sends 50 characters per page)
             const fetchPagesCount = Math.ceil(itemsPerPage / DisneyAPI.paginationItemsPerPage);
             await dispatch(appendMultiplePagesAsync(fetchPagesCount));
-            setCurrentPage(Math.ceil(charactersPages.count / itemsPerPage) + 1);
         }
-        else setCurrentPage(p => p + 1);
+        setCurrentPage(p => p + 1);
     };
 
     // pagination previous page click handler
