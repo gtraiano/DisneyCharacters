@@ -111,14 +111,18 @@ const CharactersTable = ({ props = defaultProps }) => {
     // set tbody and tbody > td width
     const setTableBodyWidth = () => {
         const tbody = (containerRef.current as HTMLDivElement).querySelector('tbody');
-        (containerRef.current as HTMLDivElement).style.overflowX = 'hidden';
-        if(!tbody || !tbody.childElementCount) return;
-        tbody.style.width = `${(containerRef.current as HTMLDivElement).clientWidth}px`;
-        const tdWidth = (containerRef.current as HTMLDivElement).clientWidth / props.columns.length;
-        tbody.querySelectorAll('tr > td').forEach(td => {
-            (td as HTMLTableCellElement).style.width = `${tdWidth}px`;
+        if(!tbody) return;
+
+        // get header row
+        const thead = [...(containerRef.current as HTMLDivElement).querySelectorAll('thead > tr')].filter(tr => tr.childElementCount === props.columns.length)[0];
+        // set body as wide as header
+        tbody.style.width = `${thead.clientWidth}px`;
+
+        if(!tbody.childElementCount) return;
+        // set each body cell width equal to respective header cell width
+        tbody.querySelectorAll('tr > td').forEach((td, i) => {
+            (td as HTMLTableCellElement).style.width = `${thead.children[i % thead.children.length].clientWidth}px`;
         });
-        (containerRef.current as HTMLDivElement).style.overflowX = '';
     };
 
     // handle left click on sortable column header
