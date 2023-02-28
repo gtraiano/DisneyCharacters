@@ -42,7 +42,7 @@ function App() {
         <div className="App">
             <Filter styling={{ marginBottom: '1em' }} />
             <CharactersTable />
-            <PieChart width='500px' height='300px' containerStyling={{ marginTop: '1em' }} />
+            <PieChart width='30vw' containerStyling={{ marginTop: '1em' }} />
             { showModal && <Modal toggleModal={setShowModal} children={modalContent} />}
             <span className='attribution'>
                 Powered by <a href='https://disneyapi.dev/' target='_blank' referrerPolicy='no-referrer'>Disney API</a>

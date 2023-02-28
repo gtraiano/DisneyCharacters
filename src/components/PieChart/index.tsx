@@ -129,7 +129,7 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
     }, [width, height]);
     
     return (
-        <div className="pie-chart" ref={containerRef} style={{ width: width ?? '40vw', height: height ?? 'auto', ...containerStyling }} />
+        <div className="pie-chart" ref={containerRef} style={{ width: width ?? '30vw', height: height ?? 'auto', ...containerStyling }} />
     );
 };
 
