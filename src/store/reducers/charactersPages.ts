@@ -1,6 +1,5 @@
 import { createSlice, Dispatch } from "@reduxjs/toolkit";
 import DisneyAPI from "../../controllers/DisneyAPI";
-import { DisneyCharacterData, DisneyCharactersPage } from "../../types/DisneyAPI";
 import { CharactersPagesState, FetchingStatus, StoreState } from "../types";
 import { setStatus, setError } from "./fetcherStatus";
 
