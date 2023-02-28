@@ -118,9 +118,8 @@ const CharactersTable = ({ props = defaultProps }) => {
         // set body as wide as header
         tbody.style.width = `${thead.clientWidth}px`;
 
-        if(!tbody.childElementCount) return;
-        // set each body cell width equal to respective header cell width
-        tbody.querySelectorAll('tr > td').forEach((td, i) => {
+        // need only set width for first row td's
+        tbody.querySelectorAll('tr:first-child > td').forEach((td, i) => {
             (td as HTMLTableCellElement).style.width = `${thead.children[i % thead.children.length].clientWidth}px`;
         });
     };
