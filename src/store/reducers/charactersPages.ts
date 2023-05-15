@@ -7,9 +7,14 @@ import { setStatus, setError } from "./fetcherStatus";
 
 const initialState: CharactersPagesState = {
     data: [],
-    count: 0,
+    info: {
+        count: 0,
+        totalPages: 0,
+        previousPage: null,
+        nextPage: null
+    },
     pageCount: 0,
-    totalPages: 0
+    
 }
 
 const characterPagesSlice = createSlice({
@@ -18,20 +23,20 @@ const characterPagesSlice = createSlice({
     reducers: {
         addPage: (state, action) => {
             state.data.push(...action.payload.data);
-            state.previousPage = action.payload.previousPage;
-            state.nextPage = action.payload.nextPage;
-            state.count += action.payload.count;
+            state.info.previousPage = action.payload.info?.previousPage ?? null;
+            state.info.nextPage = action.payload.info?.nextPage ?? null;
+            state.info.count += action.payload.info.count;
             state.pageCount++;
-            state.totalPages = action.payload.totalPages;
+            state.info.totalPages = action.payload.info.totalPages;
         },
 
         clear: (state) => {
             state.data = [];
-            state.previousPage = undefined;
-            state.nextPage = undefined;
-            state.count = 0;
+            state.info.previousPage = null;
+            state.info.nextPage = null;
+            state.info.count = 0;
             state.pageCount = 0;
-            state.totalPages = 0;
+            state.info.totalPages = 0;
         }
     }
 });
@@ -64,7 +69,7 @@ export const appendMultiplePagesAsync = (count: number = 1) => {
         // page numbers to be fetched
         const pageNums = new Array(count).fill(0)
             .map((_n, i) => getState().charactersPages.pageCount + i + 1)
-            .filter(pn => pn <= getState().charactersPages.totalPages);     // make sure we don't exceed max page number
+            .filter(pn => pn <= getState().charactersPages.info.totalPages);     // make sure we don't exceed max page number
                                                                             // (alternatively, we could check the nextPage property after the API request)
         // sequential processing of thunks (source: https://medium.com/swlh/sequential-and-parallel-asynchronous-functions-35b6d0a0d0f9)
         await pageNums.reduce(async (_p, n) => {

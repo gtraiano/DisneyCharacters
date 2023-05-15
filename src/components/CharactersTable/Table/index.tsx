@@ -158,7 +158,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     // pagination next page click handler
     const onClickNextPage = async () => {
         // fetch next page from API if last current page is reached
-        if(currentPage === Math.ceil(charactersPages.count / itemsPerPage)) {
+        if(currentPage === Math.ceil(charactersPages.info.count / itemsPerPage)) {
             // determine number of pages to fetch from API (note: API sends 50 characters per page)
             const fetchPagesCount = Math.ceil(itemsPerPage / DisneyAPI.paginationItemsPerPage);
             await dispatch(appendMultiplePagesAsync(fetchPagesCount));
@@ -174,7 +174,7 @@ const CharactersTable = ({ props = defaultProps }) => {
         const value = Number.parseInt(((e as FormEvent).target as HTMLSelectElement).value);
         // calculate new current page according to items
         let newCurrPage = Math.ceil((currentPage * itemsPerPage) / value);
-        newCurrPage = newCurrPage > Math.ceil(charactersPages.count / value) ? Math.ceil(charactersPages.count / value) : newCurrPage;
+        newCurrPage = newCurrPage > Math.ceil(charactersPages.info.count / value) ? Math.ceil(charactersPages.info.count / value) : newCurrPage;
         // update respective state
         setItemsPerPage(value);
         setCurrentPage(newCurrPage);
@@ -189,7 +189,7 @@ const CharactersTable = ({ props = defaultProps }) => {
             if(
                 !(
                     Number.isNaN(value)
-                    || value > Math.ceil(charactersPages.count / itemsPerPage)
+                    || value > Math.ceil(charactersPages.info.count / itemsPerPage)
                     || value < 1
                 )
             ) {
@@ -255,7 +255,7 @@ const CharactersTable = ({ props = defaultProps }) => {
                         <Pagination
                             totalItems={
                                 !filter.query?.trim()?.length
-                                    ? charactersPages.count
+                                    ? charactersPages.info.count
                                     : tableView.length
                             }
                             itemsPerPage={itemsPerPage}
