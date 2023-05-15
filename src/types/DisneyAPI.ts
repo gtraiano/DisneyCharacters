@@ -1,8 +1,8 @@
 // API available endpoints
 export enum AvailableEndpoints {
     filterCharacter = 'character',
-    getAllCharacters = 'characters',
-    getOneCharacter = 'characters'
+    getAllCharacters = 'character',
+    getOneCharacter = 'character'
 };
 
 // types of API responses
