@@ -6,22 +6,22 @@ describe('DinseyAPI controller', () => {
     describe('DisneyAPI.fetchers.byPage', () => {
         test('undefined page number brings page #1', async () => {
             const res = await DisneyAPI.fetchers.byPage();
-            expect(res.count).toBeGreaterThan(0);
+            expect(res.info.count).toBeGreaterThan(0);
             expect(res.data).toBeInstanceOf(Array);
-            expect(res.previousPage).toBeUndefined();
-            expect(res.nextPage).toBeDefined();
-            expect(res.nextPage).toMatch('?page=2');
+            expect(res.info.previousPage).toBeNull();
+            expect(res.info.nextPage).toBeDefined();
+            expect(res.info.nextPage).toMatch('?page=2');
         });
 
         test('defined page number brings correct page number', async () => {
             const pageNum = 2;
             const res = await DisneyAPI.fetchers.byPage(pageNum);
-            expect(res.count).toBeGreaterThan(0);
+            expect(res.info.count).toBeGreaterThan(0);
             expect(res.data).toBeInstanceOf(Array);
-            expect(res.previousPage).toBeDefined();
-            expect(res.previousPage).toMatch(`?page=${pageNum - 1}`);
-            expect(res.nextPage).toBeDefined();
-            expect(res.nextPage).toMatch(`?page=${pageNum + 1}`);
+            expect(res.info.previousPage).toBeDefined();
+            expect(res.info.previousPage).toMatch(`?page=${pageNum - 1}`);
+            expect(res.info.nextPage).toBeDefined();
+            expect(res.info.nextPage).toMatch(`?page=${pageNum + 1}`);
         });
 
         test('invalid page number brings throws error', async () => {
@@ -47,7 +47,7 @@ describe('DinseyAPI controller', () => {
 
         test('defined id brings correct character page', async () => {
             const id = 308;
-            const orig: DisneyCharacterData = await (await fetch(`https://api.disneyapi.dev/characters/${id}`)).json();
+            const orig: DisneyCharacterData = await (await fetch(`https://api.disneyapi.dev/character/${id}`)).json();
             const res = await DisneyAPI.fetchers.byId(id);
             expect(res._id).toEqual(orig._id);
             expect(res.name).toEqual(orig.name);

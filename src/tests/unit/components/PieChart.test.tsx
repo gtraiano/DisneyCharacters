@@ -43,9 +43,11 @@ const page = {
         "__v":0
       }
     ],
-    "count": 2,
-    "previousPage": "https://api.disneyapi.dev/characters?page=3",
-    "nextPage": "https://api.disneyapi.dev/characters?page=5",
+    "info": {
+      "count": 2,
+      "previousPage": "https://api.disneyapi.dev/characters?page=3",
+      "nextPage": "https://api.disneyapi.dev/characters?page=5",
+    }
 };
 
 describe('PieChart', () => {

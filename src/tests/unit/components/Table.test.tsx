@@ -43,9 +43,11 @@ const page = {
         "__v":0
       }
     ],
-    "count": 2,
-    "previousPage": "https://api.disneyapi.dev/characters?page=3",
-    "nextPage": "https://api.disneyapi.dev/characters?page=5",
+    "info": {
+      "count": 2,
+      "previousPage": "https://api.disneyapi.dev/characters?page=3",
+      "nextPage": "https://api.disneyapi.dev/characters?page=5"
+    }
 };
 
 
@@ -68,7 +70,7 @@ describe('CharactersTable', () => {
         const wrapped = <Provider store={store}><Table/></Provider>
         const { container } = render(wrapped);
 
-        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.count);
+        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
         // name column
         expect([...container.querySelectorAll('tbody > tr > td:nth-child(2)')].map(td => td.textContent)).toEqual(store.getState().charactersPages.data.map(c => c.name));
     });
@@ -77,12 +79,12 @@ describe('CharactersTable', () => {
         const wrapped = <Provider store={store}><Table/></Provider>
         const { container, rerender } = render(wrapped);
 
-        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.count);
+        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
 
         store.dispatch(addPage(page));
         rerender(wrapped);
 
-        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.count);
+        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
         // name column
         expect([...container.querySelectorAll('tbody > tr > td:nth-child(2) > a')].map(td => td.textContent)).toEqual(store.getState().charactersPages.data.map(c => c.name));
     });
@@ -92,7 +94,7 @@ describe('CharactersTable', () => {
         const wrapped = <Provider store={store}><Table/></Provider>
         const { container, rerender } = render(wrapped);
 
-        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.count);
+        expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
 
         //store.dispatch(addPage(page));
         store.dispatch(setQuery(page.data[0].name));
