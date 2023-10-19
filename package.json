@@ -9,23 +9,26 @@
     "preview": "vite preview",
     "test": "vitest"
   },
+  "engines": {
+    "node": ">=21.0.0"
+  },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.2",
-    "highcharts": "^10.3.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-redux": "^8.0.5"
+    "@reduxjs/toolkit": "latest",
+    "highcharts": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-redux": "latest"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.9",
-    "@vitejs/plugin-react": "^3.0.0",
-    "jsdom": "^21.1.0",
-    "typescript": "^4.9.3",
-    "vite": "^4.0.0",
-    "vitest": "^0.28.3"
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@testing-library/user-event": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "jsdom": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitest": "latest"
   }
 }
