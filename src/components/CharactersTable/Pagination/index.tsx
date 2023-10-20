@@ -21,6 +21,22 @@ const Pagination = ({
     onGoToPage
 
 }: PaginationProps) => {
+    const nextPage = (e: SyntheticEvent) => {
+        if(totalItems === 0) return;
+        onClickNextPage(e);
+    };
+
+    const prevPage = (e: SyntheticEvent) => {
+        if(currentPage <= 1) return;
+        onClickPrevPage(e);
+    }
+
+    const goToPage = (e: SyntheticEvent) => {
+        // prevent action on invalid values
+        if(currentPage > Math.ceil(totalItems / itemsPerPage) || currentPage < 0) return;
+        onGoToPage(e);
+    }
+    
     return (
         <div className={style['pagination']}>
             <div className={style['items-per-page']}>
@@ -41,15 +57,15 @@ const Pagination = ({
             <ul>
                 {/* previous page caret */}
                 <li
-                    className={style['prev-page']}
-                    onClick={onClickPrevPage}
+                    className={[style['prev-page'], currentPage <= 1 ? style['unavailable'] : ''].join(' ').trim()}
+                    onClick={prevPage}
                 />
                 {/* current page / total pages display */}
                 <li>{currentPage} / {Math.ceil(totalItems / itemsPerPage)}</li>
                 {/* next page caret */}
                 <li
-                    className={style['next-page']}
-                    onClick={onClickNextPage}
+                    className={[style['next-page'], totalItems === 0 ? style['unavailable'] : ''].join(' ').trim()}
+                    onClick={nextPage}
                 />
             </ul>
             {/* go to page */}
@@ -57,7 +73,7 @@ const Pagination = ({
                 <label>Go to page</label>
                 <input
                     type='text'
-                    onKeyDown={onGoToPage}
+                    onKeyDown={goToPage}
                     onBlur={e => { e.target.value = '' }}
                 />
             </div>

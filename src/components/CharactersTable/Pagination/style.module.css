@@ -18,6 +18,12 @@
     pointer-events: none;
 }
 
+.pagination > ul > li.prev-page.unavailable,
+.pagination > ul > li.next-page.unavailable {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* previous page caret */
 .pagination > ul > li.prev-page::after {
     content: '<';
