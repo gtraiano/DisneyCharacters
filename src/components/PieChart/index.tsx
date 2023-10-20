@@ -84,7 +84,7 @@ const PieChart = ({ width, height, containerStyling }: PieChartProps) => {
                 series: [{
                     type: 'pie',
                     name: 'Characters',
-                    colorByPoint: true,
+                    /*colorByPoint: true,*/
                     data: []
                 }],
                 exporting: {
