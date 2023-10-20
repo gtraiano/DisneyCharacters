@@ -6,7 +6,7 @@ import CharactersTable from './components/CharactersTable/Table';
 import Filter from './components/Filter';
 import Modal from './components/Modal';
 import store from './store';
-import CharacterProfile from './components/ChracterProfile';
+import CharacterProfile from './components/CharacterProfile';
 import PieChart from './components/PieChart';
 import { ShowModal } from './eventbus/events/ShowModal';
 import eventBus from './eventbus';
