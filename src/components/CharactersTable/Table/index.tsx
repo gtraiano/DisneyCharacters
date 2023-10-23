@@ -2,7 +2,7 @@ import style from './style.module.css';
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCharactersPages, selectFetcherStatus, selectFilter } from '../../../store';
-import { appendMultiplePagesAsync } from '../../../store/reducers/charactersPages';
+import { addPageAsync, appendMultiplePagesAsync } from '../../../store/reducers/charactersPages';
 import { FetchingStatus } from '../../../store/types';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
 import { CharactersTableProps } from '../Table/types';
@@ -12,6 +12,7 @@ import DisneyAPI from '../../../controllers/DisneyAPI';
 import { VisibleCharacters } from '../../../eventbus/events/VisibleCharacters';
 import { ShowModal } from '../../../eventbus/events/ShowModal';
 import eventBus from '../../../eventbus';
+import { setStatus } from '../../../store/reducers/fetcherStatus';
 
 // default table props
 const defaultProps: CharactersTableProps = {
@@ -57,7 +58,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     // items per page
     const [itemsPerPage, setItemsPerPage] = useState<number>(props.perPage ?? 50);
     // current table page
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [currentPage, setCurrentPage] = useState<number>(charactersPages.pageCount ?? 1);
     // columns to sort by
     const [sortBy, setSortBy] = useState<Array<{ colIndex: number, asc: boolean }>>([]);
 
@@ -76,6 +77,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     // table view (current page, after sorting & filtering)
     const [tableView, setTableView] = useState<DisneyCharacterData[]>(selectTableRows());
 
+    // resize table on window resize event
     useEffect(() => {
         if(containerRef.current) {
             window.addEventListener('resize', setTableBodyWidth);   
@@ -85,6 +87,7 @@ const CharactersTable = ({ props = defaultProps }) => {
         }
     }, []);
 
+    // resize table on items per page or number of columns change
     useEffect(() => {
         setTableBodyWidth();
     }, [props.columns, tableView.length]);
@@ -104,9 +107,19 @@ const CharactersTable = ({ props = defaultProps }) => {
         if(containerRef.current instanceof HTMLDivElement && containerRef.current.scrollTo) containerRef.current.scrollTo(0,0)
     }, [currentPage]);
 
+    // reset current page counter on filter change
     useEffect(() => {
-        setCurrentPage(1);
+        setCurrentPage(charactersPages.pageCount ?? 1);
     }, [filter]);
+
+    useEffect(() => {
+        // display overlay on error for limited period
+        if(fetchingStatus.status === FetchingStatus.FAILED && charactersPages.pageCount > 0) {
+            setTimeout(() => {
+                dispatch(setStatus(FetchingStatus.IDLE));
+            }, 1500);
+        }
+    }, [fetchingStatus]);
 
     // set tbody and tbody > td width
     const setTableBodyWidth = () => {
@@ -277,12 +290,28 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     return (
         <div
-            className={style['characters-table-container']}
+            className={[style['characters-table-container'], fetchingStatus.error ? style['error'] : ''].join(' ').trim()}
             data-loading={fetchingStatus.status === FetchingStatus.LOADING ? '' : undefined}
+            data-error={fetchingStatus.status === FetchingStatus.FAILED ? '' : undefined}
             ref={containerRef}
         >
-            {/* display overlay when fetching data*/
-             fetchingStatus.status === FetchingStatus.LOADING && <div className={style['table-overlay']} />
+            {/* display overlay when fetching data */
+             fetchingStatus.status === FetchingStatus.LOADING && <div className={style['table-overlay']} data-message="loading" />
+            }
+            {/* display overlay on fetching error */
+             fetchingStatus.status === FetchingStatus.FAILED &&
+             <div
+                className={`${style['table-overlay']} ${style['error-message']}`}
+                data-message={!charactersPages.pageCount ? "Failed to reach Disney API" : fetchingStatus.error}
+             >
+                { /* retry button */
+                 !charactersPages.pageCount &&
+                 <button
+                    className={style['retry-button']}
+                    onClick={() => { dispatch(addPageAsync(1)) }}
+                 />
+                }
+             </div>
             }
             <table className={style['characters-table']}>
                 { generateTableHeader() }
