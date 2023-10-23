@@ -12,10 +12,13 @@ const fetcherStatusSlice = createSlice({
     name: 'fetcherStatus',
     initialState,
     reducers: {
-        setStatus: (state, action: { type: string, payload: FetchingStatus }) => {
+        // set status (other than error)
+        setStatus: (state, action: { type: string, payload: Exclude<FetchingStatus, FetchingStatus.FAILED> }) => {
             state.status = action.payload;
+            state.error = null;
         },
-        setError: (state, action) => {
+        // set status to error with error message as payload
+        setError: (state, action: { type: string, payload: string }) => {
             state.status = FetchingStatus.FAILED;
             state.error = action.payload;
         }
