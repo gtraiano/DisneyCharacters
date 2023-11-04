@@ -58,7 +58,7 @@ const CharactersTable = ({ props = defaultProps }) => {
     // items per page
     const [itemsPerPage, setItemsPerPage] = useState<number>(props.perPage ?? 50);
     // current table page
-    const [currentPage, setCurrentPage] = useState<number>(charactersPages.pageCount ?? 1);
+    const [currentPage, setCurrentPage] = useState<number>(0);
     // columns to sort by
     const [sortBy, setSortBy] = useState<Array<{ colIndex: number, asc: boolean }>>([]);
 
@@ -90,7 +90,9 @@ const CharactersTable = ({ props = defaultProps }) => {
     // resize table on items per page or number of columns change
     useEffect(() => {
         setTableBodyWidth();
-    }, [props.columns, tableView.length]);
+        // nothing displayed in table (i.e. 0 pages)
+        if(!tableView.length) setCurrentPage(0);
+    }, [props.columns, tableView.length]);  
 
     // update table view
     useEffect(() => {
@@ -109,8 +111,20 @@ const CharactersTable = ({ props = defaultProps }) => {
 
     // reset current page counter on filter change
     useEffect(() => {
-        setCurrentPage(charactersPages.pageCount ?? 1);
+        // filtering enabled
+        if(filter.query?.length) {
+            // we have search results
+            setCurrentPage(tableView.length ? 1 : 0)
+        }
+        else {
+            setCurrentPage(1)
+        }
     }, [filter]);
+
+    // current page on initial characters data load
+    useEffect(() => {
+        setCurrentPage(p => !charactersPages.data.length ? 0 : p !== 0 ? p : 1)
+    }, [charactersPages.data]);
 
     useEffect(() => {
         // display overlay on error for limited period
