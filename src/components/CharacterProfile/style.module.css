@@ -18,10 +18,12 @@
 .info > .stats {
     display: inline-flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .stats > h2 {
     margin-top: 0;
+    max-width: calc(100% - 1ch);
 }
 
 .profile-container > ul {
