@@ -1,8 +1,10 @@
 import { fireEvent, render } from "@testing-library/react";
 import { Provider } from "react-redux";
+import { describe, test, expect } from 'vitest';
 import Filter from "../../../components/Filter";
 import store from "../../../store";
 import { setField, setQuery } from "../../../store/reducers/filter";
+import React from "react";
 
 describe('Filter', () => {
     test('empty filter query', () => {

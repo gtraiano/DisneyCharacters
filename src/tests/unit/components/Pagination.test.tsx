@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { SyntheticEvent } from 'react';
-import { vi } from 'vitest';
+import React, { SyntheticEvent } from 'react'
+import { describe, test, expect, vi } from 'vitest'
 import Pagination from '../../../components/CharactersTable/Pagination'
 
 
@@ -57,12 +57,13 @@ describe('Pagination', () => {
             expect((await screen.findByText(/\d+ \/ \d+/)).textContent).toMatch(`${expected} / ${Math.ceil(totalItems / itemsPerPage)}`);
         });
 
-        test('click on previous page caret executes onClickPrevPage callback and updates page dsiplay', async () => {
+        test('click on previous page caret executes onClickPrevPage callback and updates page display', async () => {
             const spy = vi.fn().mockImplementation(onClickPrevPage);
             const { container, rerender } = render({ ...pagination, props: { ...pagination.props, onClickPrevPage: spy } });
             const expected = currentPage - 1;
         
-            const [prevPageCaret] = [...container.querySelectorAll('li')].filter(li => /prev-page/gi.test(li.className));
+            //const [prevPageCaret] = [...container.querySelectorAll('li')].filter(li => /prev-page/gi.test(li.className));
+            const prevPageCaret = container.querySelector('li.prev-page') as HTMLLIElement;
 
             fireEvent.click(prevPageCaret);
             rerender({ ...pagination, props: { ...pagination.props, currentPage } });

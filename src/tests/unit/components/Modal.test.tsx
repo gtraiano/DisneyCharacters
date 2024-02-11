@@ -1,7 +1,8 @@
 import { render, fireEvent } from '@testing-library/react'
-import { vi } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 import Modal from '../../../components/Modal'
 import style from '../../../components/Modal/style.module.css'
+import React from 'react';
 
 describe('Modal', () => {
     test('empty content renders no content', async () => {

@@ -1,9 +1,11 @@
-import { createEvent, render, fireEvent } from '@testing-library/react'
+import { createEvent, render, fireEvent, act } from '@testing-library/react'
 import { Provider } from 'react-redux';
+import { describe, test, expect } from 'vitest';
 import PieChart from '../../../components/PieChart';
 import { VisibleCharacters } from '../../../eventbus/events/VisibleCharacters';
 import store from '../../../store';
 import { addPage } from '../../../store/reducers/charactersPages';
+import React from 'react';
 
 
 const page = {
@@ -65,7 +67,7 @@ describe('PieChart', () => {
         expect(container.querySelector('.highcharts-series-0')?.childElementCount).toBe(1);
         expect(container.querySelector('.highcharts-data-label')?.childElementCount).toBeUndefined();
         
-        store.dispatch(addPage(page))
+        act(() => { store.dispatch(addPage(page)) });
         expect(store.getState().charactersPages.data.length).toBe(page.data.length);
         
         // visibleCharacters event

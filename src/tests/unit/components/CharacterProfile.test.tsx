@@ -1,7 +1,9 @@
-import { render } from '@testing-library/react'
-import CharacterProfile from '../../../components/ChracterProfile';
-import style from '../../../components/ChracterProfile/style.module.css';
+import { render } from '@testing-library/react';
+import { describe, test, expect } from 'vitest';
+import CharacterProfile from '../../../components/CharacterProfile';
+import style from '../../../components/CharacterProfile/style.module.css';
 import { DisneyCharacterData } from '../../../types/DisneyAPI';
+import React from 'react';
 
 describe('CharacterProfile', () => {
     test('undefined props renders nothing', async () => {

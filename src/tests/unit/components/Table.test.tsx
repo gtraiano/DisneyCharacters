@@ -1,10 +1,12 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { describe, test, expect, beforeEach } from 'vitest';
 import store from '../../../store';
 import Table from '../../../components/CharactersTable/Table'
 import { addPage, clear } from '../../../store/reducers/charactersPages';
 import { setQuery } from '../../../store/reducers/filter';
-import style from '../../../components/CharactersTable/Table/style.module.css'
+import style from '../../../components/CharactersTable/Table/style.module.css';
+import React from 'react';
 
 const page = {
     "data": [
@@ -81,7 +83,7 @@ describe('CharactersTable', () => {
 
         expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
 
-        store.dispatch(addPage(page));
+        act(() => { store.dispatch(addPage(page)) });
         rerender(wrapped);
 
         expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
@@ -90,14 +92,14 @@ describe('CharactersTable', () => {
     });
 
     test('change filter value in store', () => {
-        store.dispatch(addPage(page));
+        act(() => { store.dispatch(addPage(page)) });
         const wrapped = <Provider store={store}><Table/></Provider>
         const { container, rerender } = render(wrapped);
 
         expect(container.querySelector('tbody')?.childElementCount).toBe(store.getState().charactersPages.info.count);
 
         //store.dispatch(addPage(page));
-        store.dispatch(setQuery(page.data[0].name));
+        act(() => { store.dispatch(setQuery(page.data[0].name)) });
         rerender(wrapped);
 
         const re = new RegExp(page.data[0].name, 'gi');
@@ -109,7 +111,7 @@ describe('CharactersTable', () => {
 
     describe('sort by column', () => {
         test('single column, asc > desc > none', () => {
-            store.dispatch(addPage(page));
+            act(() => { store.dispatch(addPage(page)) });
             const wrapped = <Provider store={store}><Table/></Provider>
             const { container } = render(wrapped);
         
@@ -130,7 +132,7 @@ describe('CharactersTable', () => {
       });
 
       test('multiple columns, asc > desc > none', () => {
-          store.dispatch(addPage(page));
+          act(() => { store.dispatch(addPage(page)) });
           const wrapped = <Provider store={store}><Table/></Provider>
           const { container } = render(wrapped);
 

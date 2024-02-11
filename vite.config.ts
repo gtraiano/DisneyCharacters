@@ -11,7 +11,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/tests/setup.ts'
+    setupFiles: './src/tests/setup.ts',
+    css: {
+      modules: { classNameStrategy: 'non-scoped' }
+    }
   },
   // https://github.com/vitejs/vite/discussions/9440
   build: {

@@ -31,8 +31,8 @@ export interface DisneyCharactersPage {
     data: DisneyCharacterData[],    // characters data
     info: {
         count: number,                  // number of characters fetched
-        previousPage: string | null,          // previous page url
-        nextPage: string | null,              // next page url
+        previousPage: string | null,    // previous page url
+        nextPage: string | null,        // next page url
         totalPages: number              // end page number (i.e. the max page number the API will serve)
     }
 };
